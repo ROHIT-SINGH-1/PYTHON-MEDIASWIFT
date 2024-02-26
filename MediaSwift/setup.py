@@ -12,7 +12,7 @@ def read_file(filename):
 
 setup(
     name="MediaSwift",
-    version="2.2.1",
+    version="2.2.2",
     author="ROHIT SINGH",
     author_email="rs3232263@gmail.com",
     description="A MediaSwift PYTHON PACKAGE FOR MEDIA CONVERSION PLAY AND PROBING.",
@@ -40,6 +40,8 @@ setup(
     },
     install_requires=[
         "rich",
+        "tqdm",
+        "numpy",
     ],
     entry_points={
         "console_scripts": [

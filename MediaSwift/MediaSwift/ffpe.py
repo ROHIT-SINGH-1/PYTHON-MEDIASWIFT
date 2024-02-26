@@ -4,9 +4,8 @@
 import os
 import gc
 import re
-import subprocess
-import threading
 import time
+import subprocess
 import logging
 from tqdm import tqdm
 import numpy as np
@@ -15,6 +14,7 @@ from functools import lru_cache
 from rich.box import ROUNDED
 from rich.table import Table
 from rich.console import Console
+from rich.panel import Panel
 
 console = Console()
 
@@ -36,20 +36,20 @@ class ffpe:
 
     >>> THIS CLASS PROVIDES CONVENIENT INTERFACE FOR USING FFPE TO CONVERT MULTIMEDIA FILES.
 
-    ↠ ATTRIBUTE'S
+    ⇨ ATTRIBUTE'S
     --------------
     >>> FFpe_PATH : STR
         >>> PATH TO THE FFPE EXECUTABLE.
     >>> LOGGER : LOGGING.LOGGER
         >>> LOGGER INSTANCE FOR LOGGING MESSAGES.
 
-    ↠ METHOD'S
+    ⇨ METHOD'S
     -----------
     >>> CONVERT(INPUT_FILES, OUTPUT_DIR, CV=NONE, CA=NONE, S=NONE, HWACCEL=NONE,
     >>>         AR=NONE, AC=NONE, BA=NONE, R=NONE, F=NONE, PRESET=NONE, BV=NONE)
     >>>     CONVERT MULTIMEDIA FILES USING FFMPEG.
 
-    ↠ CONVERT( )
+    ⇨ CONVERT( )
     -------------
         >>> NOTE: USE "convert()" TO CONVERT MEDIA FILES.
 
@@ -67,11 +67,11 @@ class ffpe:
         ... input_files = [r'PATH_TO_INPUT_FILE', r'PATH_TO_INPUT_FILE']       # input_files [MULTIPLE CONVERT]
         ... input_files = [r'PATH_TO_INPUT_FILE']                              # input_files [SINGLE CONVERT]
 
-         output_dir = r'output_folder'
+         output_dir = r'OUTPUT_FOLDER'
 
          # PERFORM MULTIMEDIA FILE CONVERSION USING FFMPEG.
          ffpe_instance.convert(
-             input_files=input_file,
+             input_files=input_files,
              output_dir=output_dir,
              cv='h264',        # VIDEO CODEC
              ca='aac',         # AUDIO CODEC
@@ -98,7 +98,7 @@ class ffpe:
         bv='20M'               # VIDEO BITRATE
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         ```
-            >>> NOTE ↠ CONVERTING VIDEO TO AUDIO :
+            >>> NOTE ⇨ CONVERTING VIDEO TO AUDIO :
         ```python
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -125,11 +125,11 @@ class ffpe:
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         ```
-    ↠ CODEC'S( )
+    ⇨ CODEC'S( )
     -------------
         >>> GET INFORMATION ABOUT AVAILABLE CODECS USING FFMPEG.
 
-    ↠ FORMAT'S( )
+    ⇨ FORMAT'S( )
     -------------
        >>> GET INFORMATION ABOUT AVAILABLE FORMATS USING FFMPEG.
 
@@ -147,6 +147,10 @@ class ffpe:
             os.path.dirname(os.path.realpath(__file__)), "bin", "ffpe.exe"
         )
         self.logger = self._initialize_logger()
+
+        self._ffprobe_path = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), "bin", "ffpr.exe"
+        )
 
     def _initialize_logger(self) -> logging.Logger:
         """
@@ -215,9 +219,9 @@ class ffpe:
              preset='fast'     # PRESET FOR ENCODING
          )
         NOTE - ALWAYS SET INPUT FILE PATH IN SQUARE BRACKETS: DO NOT USE SQUARE [] BRACKETS IN OUTPUT PATH !
-        EXAMPLE_1 ↠ input_files= [ r"PATH_TO_INPUT_FILE" ]    # SINGLE CONVERTION
+        EXAMPLE_1 ⇨ input_files= [ r"PATH_TO_INPUT_FILE" ]    # SINGLE CONVERTION
 
-        EXAMPLE_2 ↠ input_files=[
+        EXAMPLE_2 ⇨ input_files=[
                                 r"PATH_TO_INPUT_FILE_1",
                                 r"PATH_TO_INPUT_FILE_2" ]    # MULTIPLE CONVERTION
 
@@ -229,7 +233,7 @@ class ffpe:
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         ```
         ```python
-        >>> NOTE ↠ CONVERTING VIDEO TO AUDIO :
+        >>> NOTE ⇨ CONVERTING VIDEO TO AUDIO :
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 
@@ -254,7 +258,7 @@ class ffpe:
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         ```
-        ↠ ADDITIONAL NOTE:
+        ⇨ ADDITIONAL NOTE:
         -------------------
         >>> REMEMBER ALWAYS USE SQUARE [] BRACKETS FOR INPUT FILES PATH.
         >>> RETURNS: NONE
@@ -281,15 +285,23 @@ class ffpe:
         if len(input_files) > 1:
             clear_console()
             console.print(
-                "[bold yellow]CONVERTING MULTIPLE MEDIA FILES...[/bold yellow]"
+                Panel(
+                    f"[bold yellow]CONVERTING MULTIPLE MEDIA FILES. {len(input_files)}[/bold yellow]",
+                    width=45,
+                )
             )
         elif len(input_files) == 1:
             clear_console()
-            console.print("[bold yellow]CONVERTING SINGLE MEDIA FILE...[/bold yellow]")
+            console.print(
+                Panel(
+                    f"[bold yellow]CONVERTING SINGLE MEDIA FILE. {len(input_files)}[/bold yellow]",
+                    width=45,
+                )
+            )
 
-        # CREATE A LIST OF THREADS FOR EACH FILE CONVERSION.
-        threads = []
-        console.print("[bold]━━━━━━━━━━━━━━━━━━━━━━\n")
+        console.print(
+            "[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/bold magenta]\n"
+        )
 
         for i, input_file in enumerate(input_files, start=1):
             filename = os.path.basename(input_file)
@@ -298,41 +310,40 @@ class ffpe:
             )
 
             # CREATE A NEW TQDM INSTANCE FOR EACH FILE CONVERSION.
-
             progress_bar = tqdm(
                 total=100,
-                desc=f"CONVERTING [{i}]",
+                desc=f"⇨ CONVERTING {i} ⇌  {len(input_files)}",
                 unit="%",
                 dynamic_ncols=True,
-                bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} - TIME: {elapsed}",      # CUSTOMIZE THE BAR FORMAT HERE
+                bar_format="{l_bar}{bar:40}| {n_fmt}/{total_fmt} - TIME: {elapsed}",
+                colour="green",
             )
 
-            # START A NEW THREAD FOR THE FILE CONVERSION.
-            thread = threading.Thread(
-                target=self.convert_single,
-                args=(
-                    input_file,
-                    output_file,
-                    cv,
-                    ca,
-                    s,
-                    hwaccel,
-                    ar,
-                    ac,
-                    ba,
-                    r,
-                    f,
-                    preset,
-                    bv,
-                    progress_bar,
-                ),
+            self.convert_single(
+                input_file,
+                output_file,
+                cv,
+                ca,
+                s,
+                hwaccel,
+                ar,
+                ac,
+                ba,
+                r,
+                f,
+                preset,
+                bv,
+                progress_bar,
             )
-            thread.start()
-            threads.append(thread)
 
-        # WAIT FOR ALL THREADS TO COMPLETE.
-        for thread in threads:
-            thread.join()
+            progress_bar.close()
+
+            # Display conversion completion message
+            console.print(f"[bold red]⇨ CONVERSION FILE [{i}] COMPLETED ✅[/bold red]")
+
+        console.print(
+            Panel("[bold green]⇨ ALL CONVERSIONS COMPLETED ✅[/bold green]", width=40)
+        )
 
     @lru_cache(maxsize=None)
     def convert_single(
@@ -385,9 +396,9 @@ class ffpe:
              preset='fast'     # PRESET FOR ENCODING
          )
         NOTE - ALWAYS SET INPUT FILE PATH IN SQUARE BRACKETS: DO NOT USE SQUARE [] BRACKETS IN OUTPUT PATH !
-        EXAMPLE_1 ↠ input_file= r"PATH_TO_INPUT_FILE"     # SINGLE CONVERTION
+        EXAMPLE_1 ⇨ input_file= r"PATH_TO_INPUT_FILE"     # SINGLE CONVERTION
 
-        EXAMPLE_2 ↠ input_files=[
+        EXAMPLE_2 ⇨ input_files=[
                                 r"PATH_TO_INPUT_FILE_1",
                                 r"PATH_TO_INPUT_FILE_2" ] # MULTIPLE CONVERTION.
 
@@ -398,7 +409,7 @@ class ffpe:
 
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         ```
-                >>> NOTE ↠ CONVERTING VIDEO TO AUDIO :
+                >>> NOTE ⇨ CONVERTING VIDEO TO AUDIO :
         ```python
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -423,7 +434,7 @@ class ffpe:
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         ```
-        ↠ ADDITIONAL NOTE:
+        ⇨ ADDITIONAL NOTE:
         --------------------
         >>> REMEMBER ALWAYS USE SQUARE BRACKETS FOR INPUT FILE PATH.
         >>> RETURNS: NONE
@@ -463,7 +474,7 @@ class ffpe:
             command += ["-y", output_file]
 
         try:
-            duration = self.get_duration(input_file)
+            duration = self.get_duration(self, input_file)
 
             process = subprocess.Popen(
                 command,
@@ -487,11 +498,12 @@ class ffpe:
                     progress_percentage = int(np.ceil(progress * 100))
                     progress_bar.update(progress_percentage - progress_bar.n)
 
-            progress_bar.close()  # ENSURE THE PROGRESS BAR IS CLOSED TO SHOW 100%
-            print(
-                f"\n\033[92mCONVERSION COMPLETED ✅ : [{os.path.basename(input_file)}]\033[00m"
-            )
-            time.sleep(2)
+            # ENSURE THE PROGRESS BAR IS AT 100%
+            progress_bar.n = 100
+            progress_bar.refresh()
+
+            # CLOSE THE PROGRESS BAR
+            progress_bar.close()
 
         except subprocess.CalledProcessError as e:
             print(f"FFPE COMMAND FAILED WITH ERROR: {e}")
@@ -501,10 +513,11 @@ class ffpe:
         gc.collect()
 
     @staticmethod
-    def get_duration(file_path):
-        command = f'ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "{file_path}"'
+    def get_duration(self, file_path):
+        command = f'{self._ffprobe_path} -v error -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 "{file_path}"'
         output = subprocess.check_output(command, shell=True).decode("utf-8").strip()
-        return float(output)
+        durations = np.fromstring(output, sep="\r\n")
+        return np.max(durations)
 
     @lru_cache(maxsize=None)
     def codecs(
@@ -543,29 +556,29 @@ class ffpe:
             lines = output.split("\n")
 
             if encoder:
-                # Display detailed information about the specified encoder
+                # DISPLAY DETAILED INFORMATION ABOUT THE SPECIFIED ENCODER
                 table = Table(
                     show_header=True, header_style="bold magenta", box=ROUNDED
                 )
-                table.add_column("PROPERTY", style="cyan", width=50)
+                table.add_column("PROPERTY", style="cyan", width=60)
                 table.add_column("VALUE", style="green", width=100)
 
-                for line in lines[1:]:  # Skip the header line
+                for line in lines[1:]:  # SKIP THE HEADER LINE
                     if (
                         line and ":" in line
-                    ):  # Skip empty lines and lines without a colon
+                    ):  # SKIP EMPTY LINES AND LINES WITHOUT A COLON
                         property, value = line.split(":", 1)
                         property = (
                             property.strip().upper() if property.strip() else "NONE"
                         )
                         value = value.strip().upper() if value.strip() else "NONE"
                         table.add_row(property, value)
-                        table.add_row("", "")  # Add an empty row for spacing
+                        table.add_row("", "")  # ADD AN EMPTY ROW FOR SPACING
 
                 console.print(table)
 
             else:
-                # Use rich table for formatting
+                # USE RICH TABLE FOR FORMATTING
                 table = Table(
                     show_header=True, header_style="bold magenta", box=ROUNDED
                 )
@@ -574,10 +587,10 @@ class ffpe:
                 table.add_column("DESCRIPTION", style="yellow", width=100)
                 table.add_column("FEATURES", style="cyan", width=20)
 
-                for line in lines[11:]:  # Skip the header lines
-                    if line:  # Skip empty lines
+                for line in lines[11:]:  # SKIP THE HEADER LINES
+                    if line:  # SKIP EMPTY LINES
                         fields = line.split()
-                        if len(fields) >= 4:  # Ensure there are enough fields
+                        if len(fields) >= 4:  # ENSURE THERE ARE ENOUGH FIELDS
                             codec_name = fields[1]
                             codec_type = fields[2].strip("()")
                             codec_description = " ".join(fields[3:])
@@ -728,7 +741,7 @@ class ffpe:
             table = Table(show_header=True, header_style="bold magenta", box=ROUNDED)
             table.add_column("HARDWARE ACCELERATION METHODS", style="cyan", width=50)
 
-            # Skip the first line in the output
+            # SKIP THE FIRST LINE IN THE OUTPUT
             for hwaccel in hwaccels[1:]:
                 table.add_row(hwaccel)
             console.print(table)
@@ -737,6 +750,188 @@ class ffpe:
             console.print(f"[bold red]FFPE COMMAND FAILED WITH ERROR: {e}[/bold red]")
         except Exception as e:
             console.print(f"[bold red]AN ERROR OCCURRED: {e}[/bold red]")
+
+        gc.collect()
+
+    @lru_cache(maxsize=None)
+    def MediaClip(
+        self,
+        input_file: str,
+        output_file: str,
+        start_time: str,
+        duration: str,
+        fps: Optional[int] = None,
+    ) -> None:
+        """
+        >>> EXTRACTS SPECIFIC PART OF VIDEO AND CONVERTS IT TO GIF.
+
+        PARAMETERS:
+        -----------
+        >>> INPUT_FILE (STR): PATH TO THE INPUT VIDEO FILE.
+        >>> OUTPUT_FILE (STR): PATH TO THE OUTPUT GIF FILE.
+        >>> START_TIME (STR): START TIME OF THE CLIP (FORMAT: MM:SS).
+        >>> DURATION (STR): DURATION OF THE CLIP (FORMAT: MM:SS).
+        >>> FPS (OPTIONAL[INT]): FRAMES PER SECOND FOR THE OUTPUT GIF. IF NONE, THE ORIGINAL FPS WILL BE USED.
+
+        >>> RETURNS: NONE
+        """
+        try:
+            # BUILD THE FFMPEG COMMAND BASED ON THE PROVIDED PARAMETERS.
+            command = [
+                self.ffpe_path,
+                "-hide_banner",
+                "-i",
+                input_file,
+                "-ss",
+                start_time,
+                "-t",
+                duration,
+                "-vf",
+                "scale=-1:-1:flags=lanczos",
+            ]
+
+            if fps is not None:
+                command += ["-r", str(fps)]
+
+            command += ["-y", output_file]
+
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                universal_newlines=True,
+                encoding="utf-8",
+                shell=True,
+                bufsize=1,
+            )
+
+            for line in process.stdout:
+                print(line, end="")
+
+            print(f"\nMEDIACLIP COMPLETED: {output_file}")
+
+        except subprocess.CalledProcessError as e:
+            print(f"MEDIACLIP FAILED WITH ERROR: {e}")
+        except Exception as e:
+            print(f"AN ERROR OCCURRED: {e}")
+
+        gc.collect()
+
+    @lru_cache(maxsize=None)
+    def MediaClip(
+        self,
+        input_file: str,
+        output_file: str,
+        time_range: str,
+        fps: Optional[int] = None,
+    ) -> None:
+        """
+
+        >>> EXTRACTS SPECIFIC PART OF VIDEO AND CONVERTS IT TO GIF.
+
+        PARAMETERS:
+        -----------
+        >>> INPUT_FILE (STR): PATH TO THE INPUT VIDEO FILE.
+        >>> OUTPUT_FILE (STR): PATH TO THE OUTPUT GIF FILE.
+        >>> TIME_RANGE (STR): TIME RANGE OF THE CLIP (FORMAT: MM:SS,MM:SS).
+        >>> FPS (OPTIONAL[INT]): FRAMES PER SECOND FOR THE OUTPUT GIF. IF NONE, THE ORIGINAL FPS WILL BE USED.
+
+        ```python
+
+        >>> EXAMPLE
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        from MediaSwift import *
+
+        CONVERTER = ffpe()
+        INPUT_FILE = r"PATH_TO_INPUT_FILE"  # INPUT FILE
+        OUTPUT_FILE = r"PATH_TO_INPUT_FILE"  # OUTPUT FILE
+        TIME_RANGE = "01:30,02:30"  # CLIP FROM 1 MINUTE 30 SECONDS TO 2 MINUTES 30 SECONDS
+
+        CONVERTER.MediaClip(INPUT_FILE, OUTPUT_FILE, TIME_RANGE)
+
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        ```
+
+        >>> RETURNS: NONE
+        """
+        try:
+            start_time, end_time = map(str.strip, time_range.strip("()").split(","))
+            start_seconds = sum(
+                float(x) * 60**i for i, x in enumerate(reversed(start_time.split(":")))
+            )
+            end_seconds = sum(
+                float(x) * 60**i for i, x in enumerate(reversed(end_time.split(":")))
+            )
+            duration_seconds = end_seconds - start_seconds
+
+            # BUILD THE FFMPEG COMMAND BASED ON THE PROVIDED PARAMETERS.
+            command = [
+                self.ffpe_path,
+                "-hide_banner",
+                "-i",
+                input_file,
+                "-ss",
+                f"{int(start_seconds)}",  # CONVERT START TIME TO INTEGER (WITHOUT FRACTIONS)
+                "-t",
+                f"{int(duration_seconds):.0f}",  # CONVERT DURATION TO INTEGER (WITHOUT FRACTIONS)
+                "-vf",
+                "scale=-1:-1:flags=lanczos",
+            ]
+
+            if fps is not None:
+                command += ["-r", str(fps)]
+
+            command += ["-y", output_file]
+
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                encoding="utf-8",
+                shell=True,
+                bufsize=1,
+                universal_newlines=True,
+            )
+
+            os.system("cls")
+            console.print(
+                Panel(
+                    "[bold yellow]MEDIACLIP FILE CONVERTION.. [/bold yellow]", width=35
+                )
+            )
+            console.print(
+                "[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/bold magenta]\n"
+            )
+            with tqdm(
+                total=100,
+                desc="MEDIACLIP",
+                unit="%",
+                dynamic_ncols=True,
+                bar_format="{l_bar}{bar:40}| {n_fmt}/{total_fmt} - TIME: {elapsed}",
+            ) as progress_bar:
+                for line in process.stderr:
+                    match = re.search(r"time=(\d+:\d+:\d+.\d+)", line)
+                    if match:
+                        time_str = match.group(1)
+                        m, s = map(float, time_str.split(":")[1:])  # Skip the hour part
+                        elapsed_time = m * 60 + s
+                        progress = min(elapsed_time / duration_seconds, 1.0)
+
+                        # UPDATE TQDM PROGRESS USING NUMPY.CEIL TO ROUND UP
+                        progress_percentage = int(np.ceil(progress * 100))
+                        progress_bar.update(progress_percentage - progress_bar.n)
+
+            console.print(
+                Panel("[bold green]⇨ CONVERSION COMPLETED ✅[/bold green]", width=30)
+            )
+            time.sleep(5)
+            os.system("cls")
+
+        except subprocess.CalledProcessError as e:
+            print(f"MEDIACLIP FAILED WITH ERROR: {e}")
+        except Exception as e:
+            print(f"AN ERROR OCCURRED: {e}")
 
         gc.collect()
 

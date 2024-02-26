@@ -1,6 +1,7 @@
 # ffpl.py
 # ---------
 
+from rich.panel import Panel
 from rich.console import Console
 import os
 import gc
@@ -9,7 +10,7 @@ from functools import lru_cache
 import time
 import threading
 
-console = Console()
+console = Console(width=30)
 
 
 class ffpl:
@@ -18,12 +19,12 @@ class ffpl:
 
     ATTRIBUTES
     ----------
-    >>> ↠ FFPL_PATH : STR
+    >>> ⇨ FFPL_PATH : STR
         >>> PATH TO THE FFPL EXECUTABLE.
 
     METHODS
     -------
-    >>> ↠ PLAY(MEDIA_FILE)
+    >>> ⇨ PLAY(MEDIA_FILE)
         >>> PLAY MULTIMEDIA FILE.
     >>> EXAMPLE:
 
@@ -66,7 +67,7 @@ class ffpl:
         """
         >>> PLAY MULTIMEDIA FILE USING FFPL WITH SPECIFIED VIDEO FILTERS.
 
-        ↠ PARAMETER'S
+        ⇨ PARAMETER'S
         ------------
         >>> MEDIA_FILE : STR
            >>> PATH TO THE MULTIMEDIA FILE TO BE PLAYED.
@@ -85,8 +86,17 @@ class ffpl:
         >>> RETURNS: NONE
 
         """
-        # MODIFY THE COMMAND TO INCLUDE THE OPTIONS FOR SETTING.
+        if not os.path.exists(media_file):
+            console.print(
+                f"ERROR: THE FILE '{media_file}' DOES NOT EXIST.", style="bold red"
+            )
+            return
 
+        if not os.path.isfile(media_file):
+            console.print(f"ERROR: '{media_file}' IS NOT A FILE.", style="bold red")
+            return
+
+        # MODIFY THE COMMAND TO INCLUDE THE OPTIONS FOR SETTING.
         command = [
             self.ffplay_path,
             "-hide_banner",
@@ -102,9 +112,21 @@ class ffpl:
 
         # PRINT A CYCLIC WAVE PATTERN TO CREATE AN ILLUSION OF A MOVING WAVE.
         def print_wave_pattern(stop_wave_pattern):
-            wave_pattern = "⣀⣀⣀⣤⣤⣤⣶⣶⣶⣿⣿⣿⣿⣿⣿⣶⣶⣶⣤⣤⣤⣀⣀⣀"
+            wave_pattern = "▅▆▇▆▅▄▃▄▅▆▇▆▅"
             while not stop_wave_pattern.is_set():
-                console.print(wave_pattern, end="\r", style="bold cyan")
+                # Get the current width of the console.
+                console_width = console.width
+                # Subtract the width of the panel's border.
+                console_width -= 4  # Adjust this value if neededf
+                # Truncate or pad the wave pattern to fit within the console width.
+                adjusted_wave_pattern = (
+                    wave_pattern * (console_width // len(wave_pattern) + 1)
+                )[:console_width]
+                os.system("cls")
+                console.print(Panel("MEDIA PLAYER 🎵", style="bold green"))
+                console.print(
+                    Panel(adjusted_wave_pattern, style="bold black"), end="\r"
+                )
                 wave_pattern = wave_pattern[2:] + wave_pattern[:2]
                 time.sleep(0.1)
 
@@ -132,7 +154,7 @@ class ffpl:
             wave_thread.join()  # WAIT FOR THE THREAD TO COMPLETE.
 
             os.system("cls")
-            console.print("MUSIC PLAYER EXITED..", style="bold yellow")
+            console.print(Panel("MEDIA PLAYER EXITED..", style="bold yellow"))
             time.sleep(2)
             os.system("cls")
             gc.collect()

@@ -1,15 +1,46 @@
 # __init__.py
 # -------------
 
+"""
+MEDIASWIFT - A PYTHON LIBRARY FOR MULTIMEDIA PROCESSING.
+AUTHOR: ROHIT SINGH
+"""
+
+
 import os
 
 from .ffpe import ffpe
 from .ffpr import ffpr
 from .ffpl import ffpl
 
-__all__ = ["ffpe", "ffpr", "ffpl", "version"]
+__all__ = ["ffpe", "ffpr", "ffpl", "version", "author"]
 
-__version__ = "2.2.1"
+__version__ = "2.2.2"
+
+__author__ = "ROHIT SINGH"
+
+
+def author():
+    """
+    >>> RETURNS THE LIBRARY AUTHOR NAME.
+
+    RETURN:
+    -------
+        >>> STR: THE LIBRARY AUTHOR NAME.
+
+    >>> EXAMPLE:
+
+    ```python
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    from MediaSwift import author
+
+    info = author()
+    print(info)
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    ```
+    >>> RETURN: NONE
+    """
+    return "PYTHON LIBRARY AUTHOR NAME: " + __author__
 
 
 def version():

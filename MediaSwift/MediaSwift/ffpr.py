@@ -10,26 +10,29 @@ from typing import Optional
 from rich.console import Console
 from rich.table import Table
 from rich.text import Text
+from rich.box import ROUNDED
+
+console = Console()
 
 
 class FFProbeResult:
     """
     >>> REPRESENTS THE INFO OF "FFPR" ANALYSIS ON MULTIMEDIA FILE.
 
-    ↠ ATTRIBUTE'S
+    ⇨ ATTRIBUTE'S
     ---------------
     >>> INFO : DICT
         >>> INFORMATION OBTAINED FROM FFPR.
 
-    ↠ METHOD'S
+    ⇨ METHOD'S
     -----------
-    >>> DURATION() ↠  OPTIONAL[FLOAT]:
+    >>> DURATION() ⇨  OPTIONAL[FLOAT]:
         >>> GET THE DURATION OF THE MULTIMEDIA FILE.
-    >>> BIT_RATE() ↠  OPTIONAL[FLOAT]:
+    >>> BIT_RATE() ⇨  OPTIONAL[FLOAT]:
         >>> GET THE BIT RATE OF THE MULTIMEDIA FILE.
-    >>> NB_STREAMS() ↠  OPTIONAL[INT]:
+    >>> NB_STREAMS() ⇨  OPTIONAL[INT]:
         >>> GET THE NUMBER OF STREAMS IN THE MULTIMEDIA FILE.
-    ↠ STREAMS():
+    ⇨ STREAMS():
         >>> GET THE DETAILS OF INDIVIDUAL STREAMS IN THE MULTIMEDIA FILE.
 
         >>> EXAMPLE:
@@ -79,12 +82,12 @@ class ffpr:
     """
     >>> CLASS FOR INTERFACING WITH FFPR TO ANALYZE MULTIMEDIA FILES.
 
-    ↠ METHOD'S
+    ⇨ METHOD'S
     -----------
-    PROBE[ INPUT_FILE ] ↠ OPTIONAL:
+    PROBE[ INPUT_FILE ] ⇨ OPTIONAL:
     --------------------------------
         >>> ANALYZE MULTIMEDIA FILE USING FFPR AND RETURN THE RESULT.
-    ↠ PRETTY( INFO )
+    ⇨ PRETTY( INFO )
     -----------------
         >>> PRINT READABLE SUMMARY OF THE FFPR ANALYSIS RESULT, MAKE BEAUTIFY CONTENT.
 
@@ -118,18 +121,22 @@ class ffpr:
         """
         >>> ANALYZE MULTIMEDIA FILE USING FFPR AND RETURN THE RESULT.
 
-        ↠ PARAMETER'S
+        ⇨ PARAMETER'S
         --------------
         INPUT_FILE : STR
         -----------------
             >>> PATH TO THE MULTIMEDIA FILE.
 
-        ↠ OPTIONAL
+        ⇨ OPTIONAL
         -----------
             >>> RESULT OF THE FFPR ANALYSIS.
             >>> RETURN: NONE
         """
         try:
+            # Check if the input file exists
+            if not os.path.isfile(input_file):
+                raise FileNotFoundError(f"FILE '{input_file}' NOT FOUND")
+
             command = [
                 self.ffprobe_path,
                 "-v",
@@ -147,11 +154,19 @@ class ffpr:
             gc.collect()
             self.pretty(self.info)
             return self.info
+        except FileNotFoundError as e:
+            error_message = Text(f"ERROR: {e}", style="bold red")
+            console.print(error_message)
+            return None
         except subprocess.CalledProcessError as e:
-            print(f"ERROR: {e}")
+            error_message = Text(f"ERROR: {e}", style="bold red")
+            console.print(error_message)
             return None
         except Exception as e:
-            print(f"ERROR: AN UNEXPECTED ERROR OCCURRED: {e}")
+            error_message = Text(
+                f"ERROR: AN UNEXPECTED ERROR OCCURRED: {e}", style="bold red"
+            )
+            console.print(error_message)
             return None
 
     @lru_cache(maxsize=None)
@@ -159,7 +174,7 @@ class ffpr:
         """
         >>> PRINT READABLE SUMMARY OF THE FFPR ANALYSIS RESULT, MAKE BEAUTIFY MEDIA INFO SHOW.
 
-        ↠ PARAMETER'S
+        ⇨ PARAMETER'S
         --------------
         INFO
         -------
@@ -177,7 +192,7 @@ class ffpr:
         )
         self.console.print("[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
 
-        table = Table(show_header=True, header_style="bold magenta")
+        table = Table(show_header=True, header_style="bold magenta", box=ROUNDED)
         table.add_column("[bold magenta]PROPERTY[/bold magenta]")
         table.add_column("[bold magenta]VALUE[/bold magenta]")
 
@@ -224,7 +239,9 @@ class ffpr:
 
             self.console.print(title)
 
-            sub_table = Table(show_header=True, header_style="bold magenta")
+            sub_table = Table(
+                show_header=True, header_style="bold magenta", box=ROUNDED
+            )
             sub_table.add_column("[bold magenta]ATTRIBUTE[/bold magenta]")
             sub_table.add_column("[bold magenta]VALUE[/bold magenta]")
 
