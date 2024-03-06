@@ -1,7 +1,6 @@
 import os
 from setuptools import setup, find_packages
 
-
 # FUNCTION TO READ THE README FILE
 def read_file(filename):
     with open(
@@ -9,10 +8,9 @@ def read_file(filename):
     ) as file:
         return file.read()
 
-
 setup(
     name="MediaSwift",
-    version="2.2.2",
+    version="2.3.1",
     author="ROHIT SINGH",
     author_email="rs3232263@gmail.com",
     description="A MediaSwift PYTHON PACKAGE FOR MEDIA CONVERSION PLAY AND PROBING.",
@@ -31,7 +29,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     keywords="MEDIA VIDEO CONVERSION PROBING AND PLAYING.",
-    python_requires=">=3.9",
+    python_requires=">=3.8",
     license="GPL-3.0",
     project_urls={
         "Documentation": "https://github.com/ROHIT-SINGH-1/PYTHON-MEDIASWIFT/blob/main/README.md",

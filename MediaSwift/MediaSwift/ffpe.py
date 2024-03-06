@@ -286,7 +286,7 @@ class ffpe:
             clear_console()
             console.print(
                 Panel(
-                    f"[bold yellow]CONVERTING MULTIPLE MEDIA FILES. {len(input_files)}[/bold yellow]",
+                    f"[bold yellow]CONVERTING MULTIPLE MEDIA FILES ⇌  {len(input_files)}[/bold yellow]",
                     width=45,
                 )
             )
@@ -294,14 +294,14 @@ class ffpe:
             clear_console()
             console.print(
                 Panel(
-                    f"[bold yellow]CONVERTING SINGLE MEDIA FILE. {len(input_files)}[/bold yellow]",
+                    f"[bold yellow]CONVERTING SINGLE MEDIA FILE ⇌  {len(input_files)}[/bold yellow]",
                     width=45,
                 )
             )
 
-        console.print(
-            "[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/bold magenta]\n"
-        )
+        # console.print(
+        #     "[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/bold magenta]\n"
+        # )
 
         for i, input_file in enumerate(input_files, start=1):
             filename = os.path.basename(input_file)
@@ -312,7 +312,7 @@ class ffpe:
             # CREATE A NEW TQDM INSTANCE FOR EACH FILE CONVERSION.
             progress_bar = tqdm(
                 total=100,
-                desc=f"⇨ CONVERTING {i} ⇌  {len(input_files)}",
+                desc=f"⇨ CONVERTING [{i}]",
                 unit="%",
                 dynamic_ncols=True,
                 bar_format="{l_bar}{bar:40}| {n_fmt}/{total_fmt} - TIME: {elapsed}",
@@ -506,8 +506,10 @@ class ffpe:
             progress_bar.close()
 
         except subprocess.CalledProcessError as e:
+            clear_console()
             print(f"FFPE COMMAND FAILED WITH ERROR: {e}")
         except Exception as e:
+            clear_console()
             print(f"AN ERROR OCCURRED: {e}")
 
         gc.collect()
@@ -631,8 +633,10 @@ class ffpe:
                 console.print(table)
 
         except subprocess.CalledProcessError as e:
+            clear_console()
             console.print(f"[bold red]FFPE COMMAND FAILED WITH ERROR: {e}[/bold red]")
         except Exception as e:
+            clear_console()
             console.print(f"[bold red]AN ERROR OCCURRED: {e}[/bold red]")
 
         gc.collect()
@@ -706,8 +710,10 @@ class ffpe:
             console.print("━━━━━━━━━━━━━━━━━━━━━━")
             console.print(table)
         except subprocess.CalledProcessError as e:
+            clear_console()
             console.print(f"[bold red]FFPE COMMAND FAILED WITH ERROR: {e}[/bold red]")
         except Exception as e:
+            clear_console()
             console.print(f"[bold red]AN ERROR OCCURRED: {e}[/bold red]")
 
         gc.collect()
@@ -747,8 +753,10 @@ class ffpe:
             console.print(table)
 
         except subprocess.CalledProcessError as e:
+            clear_console()
             console.print(f"[bold red]FFPE COMMAND FAILED WITH ERROR: {e}[/bold red]")
         except Exception as e:
+            clear_console()
             console.print(f"[bold red]AN ERROR OCCURRED: {e}[/bold red]")
 
         gc.collect()
@@ -811,8 +819,10 @@ class ffpe:
             print(f"\nMEDIACLIP COMPLETED: {output_file}")
 
         except subprocess.CalledProcessError as e:
+            clear_console()
             print(f"MEDIACLIP FAILED WITH ERROR: {e}")
         except Exception as e:
+            clear_console()
             print(f"AN ERROR OCCURRED: {e}")
 
         gc.collect()
@@ -900,9 +910,10 @@ class ffpe:
                     "[bold yellow]MEDIACLIP FILE CONVERTION.. [/bold yellow]", width=35
                 )
             )
-            console.print(
-                "[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/bold magenta]\n"
-            )
+            # console.print(
+            #     "[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/bold magenta]\n"
+            # )
+            
             with tqdm(
                 total=100,
                 desc="MEDIACLIP",
@@ -914,7 +925,7 @@ class ffpe:
                     match = re.search(r"time=(\d+:\d+:\d+.\d+)", line)
                     if match:
                         time_str = match.group(1)
-                        m, s = map(float, time_str.split(":")[1:])  # Skip the hour part
+                        m, s = map(float, time_str.split(":")[1:])  # SKIP THE HOUR PART
                         elapsed_time = m * 60 + s
                         progress = min(elapsed_time / duration_seconds, 1.0)
 
@@ -929,8 +940,10 @@ class ffpe:
             os.system("cls")
 
         except subprocess.CalledProcessError as e:
+            clear_console()
             print(f"MEDIACLIP FAILED WITH ERROR: {e}")
         except Exception as e:
+            clear_console()
             print(f"AN ERROR OCCURRED: {e}")
 
         gc.collect()

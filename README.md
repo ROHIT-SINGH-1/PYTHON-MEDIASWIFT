@@ -1,8 +1,8 @@
-## `MediaSwift` ↠  EMPOWERING PYTHON WITH ADVANCED MULTIMEDIA OPERATION'S.
+## `MediaSwift` ⇨  🚀 EMPOWERING PYTHON WITH ADVANCED MULTIMEDIA OPERATION'S.
 
-[![License](https://img.shields.io/badge/LICENSE-GPLv3-blue.svg)](https://github.com/ROHIT-SINGH-1/PYTHON-MEDIASWIFT/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/LICENSE-GPLv3-blue?style=flat-square&logo=gnu%20bash)](https://github.com/ROHIT-SINGH-1/PYTHON-MEDIASWIFT/blob/main/LICENSE)
 
-#### A POWERFUL PYTHON LIBRARY FOR SEAMLESS MULTIMEDIA OPERATIONS. `MediaSwift` SIMPLIFIES COMPLEX TASKS, MAKING IT EASY TO INTEGRATE AND ENHANCE YOUR MULTIMEDIA APPLICATIONS. DIVE INTO THE FUTURE OF MEDIA HANDLING WITH `MediaSwift` YOUR GO-TO LIBRARY FOR 2024.
+#### ⇨ `MediaSwift` : A POWERFUL PYTHON LIBRARY FOR SEAMLESS MULTIMEDIA OPERATIONS , `MediaSwift` SIMPLIFIES COMPLEX TASKS, MAKING IT EASY TO INTEGRATE AND ENHANCE YOUR MULTIMEDIA APPLICATIONS. DIVE INTO THE FUTURE OF MEDIA HANDLING WITH `MediaSwift` YOUR GO-TO LIBRARY FOR 2024 .
 
 **KEY FEATURES :**
 - **EFFORTLESS FILE CONVERSION .**
@@ -12,19 +12,20 @@
 
 ### EXPLORE THE CAPABILITIES OF `MediaSwift` AND ELEVATE YOUR PYTHON MULTIMEDIA PROJECTS WITH SIMPLICITY AND EFFICIENCY.
 
+- ## SUPPORTED VIDEO CODEC'S :
+`h264`, `libx264`, `mpeg4`, `vp9`, `av1`, `hevc`, `mjpeg`, `H.265 / HEVC`, `VP8`, `VP9`, `AV1`, `VC1`, `MPEG1`, `MPEG2`, `H.263`, `Theora`, `MJPEG`, `MPEG-3`, `MPEG-4` **...** 
 
-- ## SUPPORTED VIDEO CODEC'S:
-`h264`, `libx264`, `mpeg4`, `vp9`, `av1`, `hevc`, `mjpeg`, `H.265 / HEVC`, `VP8`, `VP9`, `AV1`, `VC1`, `MPEG1`, `MPEG2`, `H.263`, `Theora`, `MJPEG`, `MPEG-3`, `MPEG-4`, **AND MORE** .
+- ## SUPPORTED AUDIO CODEC'S :
+`aac`, `mp3`, `opus`, `vorbis`, `pcm`, `alac`, `flac`, `wv`, `ape`, `mka`, `opus`, `ac3`, `eac3`, `alac` **...** 
 
-- ## SUPPORTED AUDIO CODEC'S:
-`aac`, `mp3`, `opus`, `vorbis`, `pcm`, `alac`, `flac`, `wv`, `ape`, `mka`, `opus`, `ac3`, `eac3`, `alac`, **AND MORE** .
+- ## SUPPORTED FILE EXTENSION'S :
+**VIDEO FORMATS :** `.mp4`, `.avi`, `.mkv`, `.webm`, `.mov`, `.wmv`, `.webm`, `.flv`, `.mov`, `.wmv`, `.hevc`, `.prores`, `.dv` **...** 
 
-- ## SUPPORTED FILE EXTENSIONS:
-**VIDEO FORMATS :** `.mp4`, `.avi`, `.mkv`, `.webm`, `.mov`, `.wmv`, `.webm`, `.flv`, `.mov`, `.wmv`, `.hevc`, `.prores`, `.dv`
-**AUDIO FORMATS :** `.mp3`, `.aac`, `.ogg`, `.wav`, `.flac`, `.flac`, `.m4a`, `.ogg`, `.wv`, `.ape`, `.mka`, `.opus`, `mpc`, `.tak`, `.alac`, **AND MORE** .
+**AUDIO FORMATS :** `.mp3`, `.aac`, `.ogg`, `.wav`, `.flac`, `.flac`, `.m4a`, `.ogg`, `.wv`, `.ape`, `.mka`, `.opus`, `mpc`, `.tak`, `.alac` **...** 
 
-- ## SUPPORTED HARDWARE ACCELERATION:
+- ## SUPPORTED HARDWARE ACCELERATION :
 **HARDWARE ACCELERATION :** `cuda`, `dxva2`, `qsv`, `d3d11va`, `opencl`, `vulkan` .
+
 
 ## IMPORTANT NOTICE :
 - **THEY ALSO SUPPORT HARDWARE ACCELERATION FOR MEDIA FILE CONVERTION .**
@@ -34,7 +35,7 @@
   
 - **`MediaSwift`: A VERSATILE LIBRARY WITH MANY SUPPORT AUDIO AND VIDEO CODECS, AS WELL AS MULTIPLE FILE FORMATS EXTENSION .**
 
-- ## LIST THE AVAILABLE `.CODECS()`, `.FORMATES()`  AND `.HWACCELS()` :
+- ## LIST THE AVAILABLE `.CODEC'S()`, `.FORMATE'S()`  AND `.HWACCEL'S()` :
   
 ```python
 from MediaSwift import ffpe
@@ -50,7 +51,7 @@ info.codecs(encoder="aac")
 
 ```
 
-- #### ENHANCE COMPATIBILITY BY LEVERAGING THE `.format()`, `.codecs()` `.HWACCELS()` AND METHODS TO VALIDATE SUPPORT FOR A VARIETY OF FORMATS, CODECS AND HARDWARE ACCELERATION .
+- #### ENHANCE COMPATIBILITY BY LEVERAGING THE `.formats()`, `.codecs()` `.hwaccels()` AND METHODS TO VALIDATE SUPPORT FOR A VARIETY OF FORMATS, CODECS AND HARDWARE ACCELERATION .
   
 - #### GET INFORMATION ABOUT THE CODEC'S ENCODER `.codecs(encoder="aac")` .
   
@@ -73,6 +74,9 @@ from MediaSwift import ffpl
 
 play = ffpl()
 media_file = r"PATH_TO_INPUT_FILE"
+# INCREASE VOLUME BY 10 DB
+volume = 5
+media_file = r"PATH_TO_MEDIA_FILE"
 play.play(media_file)
 ```
 
@@ -96,7 +100,7 @@ DETAILS.pretty(INFO)
 
 #### THE `ffpe` CLASS PROVIDES METHODS FOR VIDEO CONVERSION, LISTING CODECS, AND LISTING FORMATS. HERE ARE SOME EXAMPLES OF HOW TO USE THESE METHODS :
 
-#### EXAMPLE ↠  CONVERT SINGLE VIDEO USING THIS : 
+#### EXAMPLE ⇨  CONVERT SINGLE VIDEO USING THIS : 
 ```python
 from MediaSwift import ffpe
 
@@ -117,8 +121,8 @@ ffmpe.convert(
 
 )
 ```
-#### EXAMPLE ↠  CONVERT MULTIPLE VIDEO USING THIS : 
-**↠ QUICK TIP : ALWAYS SET INPUT FILE PATH IN SQUARE '[ ]' BRACKETS:**
+#### EXAMPLE ⇨  CONVERT MULTIPLE VIDEO USING THIS : 
+**⇨ QUICK TIP : ALWAYS SET INPUT FILE PATH IN SQUARE '[ ]' BRACKETS:**
 
 ```python
 from MediaSwift import ffpe
@@ -147,7 +151,7 @@ ffpe_instance.convert_with_threading(
     f='mp4',          # OUTPUT FORMAT
 )
 ```
-#### EXAMPLE ↠ CONVERT MULTIPLE VIDEO INTO AUDIO FILE USING THIS : 
+#### EXAMPLE ⇨ CONVERT MULTIPLE VIDEO INTO AUDIO FILE USING THIS : 
 
 ```python
 from MediaSwift import *
@@ -171,9 +175,25 @@ ffpe_instance.convert(
 )
 
 ```
-#### ↠ QUICK TIP : USE THE `.convert(INFO)` METHOD TO CONVERT MEDIA FILES .
+#### ⇨ QUICK TIP : USE THE `.convert()` METHOD TO CONVERT MEDIA FILES .
 
-**NOTE ↠  ALWAYS SET MULTIPLE INPUT_FILES PATH IN SQUARE '[ ]' BRACKETS:**
+**NOTE ⇨  ALWAYS SET MULTIPLE INPUT_FILES PATH IN SQUARE '[ ]' BRACKETS:**
+
+
+```python
+
+from MediaSwift import *
+
+CONVERTER = ffpe()
+INPUT_FILE = r"PATH_TO_INPUT_FILE"  # INPUT FILE
+OUTPUT_FILE = r"PATH_TO_INPUT_FILE"  # OUTPUT FILE
+TIME_RANGE = "01:30,02:30"  # CLIP FROM 1 MINUTE 30 SECONDS TO 2 MINUTES 30 SECONDS 
+
+CONVERTER.MediaClip(INPUT_FILE, OUTPUT_FILE, TIME_RANGE)
+
+```
+
+#### ⇨ QUICK TIP : USE THE `.MediaClip()` METHOD TO EXTRACTS SPECIFIC PART OF VIDEO AND CONVERTS IT TO GIF.
 
 
 - ## IMPORT OBJECT AND MODULE :
@@ -192,4 +212,4 @@ pip install MediaSwift
 
 **THIS PROJECT IS MAINTAINED BY ` ROHIT SINGH `  . FOR ANY QUERIES OR CONTRIBUTIONS TO CHECK MY GITHUB, PLEASE REACH OUT TO US. THANK YOU FOR USING `MediaSwift` PYTHON LIBRARY, NEW LIBRARY RELEASE 2024 .**
 
-- **GITHUB :** [GITHUB PROFILE](https://github.com/ROHIT-SINGH-1) ✅
+[![GitHub Profile](https://img.shields.io/badge/GitHub-ROHIT%20SINGH-blue?style=flat-square&logo=github)](https://github.com/ROHIT-SINGH-1)
