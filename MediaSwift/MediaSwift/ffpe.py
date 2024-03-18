@@ -15,6 +15,7 @@ from rich.box import ROUNDED
 from rich.table import Table
 from rich.console import Console
 from rich.panel import Panel
+from rich.syntax import Syntax
 
 console = Console()
 
@@ -151,6 +152,8 @@ class ffpe:
         self._ffprobe_path = os.path.join(
             os.path.dirname(os.path.realpath(__file__)), "bin", "ffpr.exe"
         )
+
+        self.has_error = False
 
     def _initialize_logger(self) -> logging.Logger:
         """
@@ -299,10 +302,6 @@ class ffpe:
                 )
             )
 
-        # console.print(
-        #     "[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/bold magenta]\n"
-        # )
-
         for i, input_file in enumerate(input_files, start=1):
             filename = os.path.basename(input_file)
             output_file = os.path.join(
@@ -337,12 +336,14 @@ class ffpe:
             )
 
             progress_bar.close()
+            print(" ")
 
-            # Display conversion completion message
-            console.print(f"[bold red]⇨ CONVERSION FILE [{i}] COMPLETED ✅[/bold red]")
+        if self.has_error:
+            return
 
+        time.sleep(2)
         console.print(
-            Panel("[bold green]⇨ ALL CONVERSIONS COMPLETED ✅[/bold green]", width=40)
+            Panel("[bold green] FILE CONVERSION COMPLETED ✅[/bold green]", width=40)
         )
 
     @lru_cache(maxsize=None)
@@ -479,14 +480,17 @@ class ffpe:
             process = subprocess.Popen(
                 command,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
+                stderr=subprocess.STDOUT,  # Capture both stdout and stderr
                 universal_newlines=True,
                 encoding="utf-8",
                 shell=True,
                 bufsize=1,
             )
 
+            combined_output = ""  # Initialize combined_output here
+
             for line in process.stdout:
+                combined_output += line
                 match = re.search(r"time=(\d+:\d+:\d+.\d+)", line)
                 if match:
                     time_str = match.group(1)
@@ -494,25 +498,44 @@ class ffpe:
                     elapsed_time = h * 3600 + m * 60 + s
                     progress = min(elapsed_time / duration, 1.0)
 
-                    # UPDATE TQDM PROGRESS USING NUMPY.CEIL TO ROUND UP
+                    # Update tqdm progress
                     progress_percentage = int(np.ceil(progress * 100))
                     progress_bar.update(progress_percentage - progress_bar.n)
 
-            # ENSURE THE PROGRESS BAR IS AT 100%
+            # Ensure the progress bar is at 100%
             progress_bar.n = 100
             progress_bar.refresh()
 
-            # CLOSE THE PROGRESS BAR
+            # Close the progress bar
             progress_bar.close()
+
+            if "error" in combined_output.lower():  # Check if "error" is in the output
+                clear_console()
+                error_message = f"{combined_output.upper()}"  # Convert to uppercase and apply bold and red formatting
+                explanation = (
+                    "PLEASE MAKE SURE YOU HAVE PROVIDED VALID NAMES AND OPTIONS."
+                )
+                syntax = Syntax(
+                    f"{error_message}\n\n{explanation}",
+                    "bash",
+                    theme="monokai",
+                    word_wrap=True,
+                )
+                console.print(Panel(syntax, title="ERROR", border_style="red"))
+            if "error" in combined_output.lower():
+                self.has_error = True
 
         except subprocess.CalledProcessError as e:
             clear_console()
             print(f"FFPE COMMAND FAILED WITH ERROR: {e}")
+            self.has_error = True
         except Exception as e:
             clear_console()
             print(f"AN ERROR OCCURRED: {e}")
+            self.has_error = True
 
-        gc.collect()
+        finally:
+            gc.collect()
 
     @staticmethod
     def get_duration(self, file_path):
@@ -522,9 +545,9 @@ class ffpe:
         return np.max(durations)
 
     @lru_cache(maxsize=None)
-    def codecs(
-        self, encoder: str = None
-    ) -> None:  # CALL THE GARBAGE COLLECTOR TO FREE UP RESOURCES.
+    def codecs(self, encoder: str = None) -> None:
+
+        # CALL THE GARBAGE COLLECTOR TO FREE UP RESOURCES.
         """
             >>> GET INFORMATION ABOUT AVAILABLE FORMATS USING FFMPEG.
 
@@ -557,14 +580,21 @@ class ffpe:
             output = result.stdout.decode("utf-8")
             lines = output.split("\n")
 
+            clear_console()
+
+            console.print(
+                f"[bold magenta]ENCODER DETAILS: {encoder.upper()}[/bold magenta]"
+                if encoder
+                else "[bold magenta]GENERAL CODEC INFORMATION: [/bold magenta]"
+            )
+
             if encoder:
                 # DISPLAY DETAILED INFORMATION ABOUT THE SPECIFIED ENCODER
                 table = Table(
                     show_header=True, header_style="bold magenta", box=ROUNDED
                 )
-                table.add_column("PROPERTY", style="cyan", width=60)
-                table.add_column("VALUE", style="green", width=100)
-
+                table.add_column("PROPERTY", style="cyan")
+                table.add_column("VALUE", style="green")
                 for line in lines[1:]:  # SKIP THE HEADER LINE
                     if (
                         line and ":" in line
@@ -575,12 +605,34 @@ class ffpe:
                         )
                         value = value.strip().upper() if value.strip() else "NONE"
                         table.add_row(property, value)
-                        table.add_row("", "")  # ADD AN EMPTY ROW FOR SPACING
+
+                console.print(table)
+
+            console.print(
+                "[bold magenta]ENCODER AVOPTIONS[/bold magenta]"
+                if encoder
+                else "[bold magenta]CODECS FEATURES LEGEND: [/bold magenta]"
+            )
+            if encoder:
+                # Display detailed information about the specified encoder
+                table = Table(
+                    show_header=True, header_style="bold magenta", box=ROUNDED
+                )
+                table.add_column("PROPERTY", style="cyan")
+                table.add_column("VALUE", style="green")
+
+                for line in lines:
+                    if line.strip().startswith("-"):
+                        # Parse AVOptions
+                        property_value = line.strip().split(maxsplit=1)
+                        if len(property_value) == 2:
+                            property_name, property_value = property_value
+                            table.add_row(property_name.upper(), property_value.upper())
 
                 console.print(table)
 
             else:
-                # USE RICH TABLE FOR FORMATTING
+                # Display general codec information
                 table = Table(
                     show_header=True, header_style="bold magenta", box=ROUNDED
                 )
@@ -589,10 +641,10 @@ class ffpe:
                 table.add_column("DESCRIPTION", style="yellow", width=100)
                 table.add_column("FEATURES", style="cyan", width=20)
 
-                for line in lines[11:]:  # SKIP THE HEADER LINES
-                    if line:  # SKIP EMPTY LINES
+                for line in lines[11:]:  # Skip the header lines
+                    if line:  # Skip empty lines
                         fields = line.split()
-                        if len(fields) >= 4:  # ENSURE THERE ARE ENOUGH FIELDS
+                        if len(fields) >= 4:  # Ensure there are enough fields
                             codec_name = fields[1]
                             codec_type = fields[2].strip("()")
                             codec_description = " ".join(fields[3:])
@@ -610,12 +662,14 @@ class ffpe:
                             )
 
                             table.add_row(
-                                codec_name, codec_type, codec_description, features_str
+                                codec_name.upper(),
+                                codec_type.upper(),
+                                codec_description.upper(),
+                                features_str.upper(),
                             )
 
                 legend = "\n".join(
                     [
-                        "[bold magenta]CODECS FEATURES LEGEND:[/bold magenta]",
                         "[cyan] D.....[/cyan] = DECODING SUPPORTED",
                         "[cyan] .E....[/cyan] = ENCODING SUPPORTED",
                         "[green] ..V...[/green] = VIDEO CODEC",
@@ -697,7 +751,12 @@ class ffpe:
                             + (".L" if "L" in features else "")
                         )
 
-                        table.add_row(format_name, format_description, features_str)
+                        table.add_row(
+                            format_name.upper(),
+                            format_description.upper(),
+                            features_str.upper(),
+                        )
+                        clear_console()
 
             legend = "\n".join(
                 [
@@ -745,11 +804,12 @@ class ffpe:
             hwaccels = output.strip().split("\n")
 
             table = Table(show_header=True, header_style="bold magenta", box=ROUNDED)
+            clear_console()
             table.add_column("HARDWARE ACCELERATION METHODS", style="cyan", width=50)
 
             # SKIP THE FIRST LINE IN THE OUTPUT
             for hwaccel in hwaccels[1:]:
-                table.add_row(hwaccel)
+                table.add_row(hwaccel.upper())
             console.print(table)
 
         except subprocess.CalledProcessError as e:
@@ -758,72 +818,6 @@ class ffpe:
         except Exception as e:
             clear_console()
             console.print(f"[bold red]AN ERROR OCCURRED: {e}[/bold red]")
-
-        gc.collect()
-
-    @lru_cache(maxsize=None)
-    def MediaClip(
-        self,
-        input_file: str,
-        output_file: str,
-        start_time: str,
-        duration: str,
-        fps: Optional[int] = None,
-    ) -> None:
-        """
-        >>> EXTRACTS SPECIFIC PART OF VIDEO AND CONVERTS IT TO GIF.
-
-        PARAMETERS:
-        -----------
-        >>> INPUT_FILE (STR): PATH TO THE INPUT VIDEO FILE.
-        >>> OUTPUT_FILE (STR): PATH TO THE OUTPUT GIF FILE.
-        >>> START_TIME (STR): START TIME OF THE CLIP (FORMAT: MM:SS).
-        >>> DURATION (STR): DURATION OF THE CLIP (FORMAT: MM:SS).
-        >>> FPS (OPTIONAL[INT]): FRAMES PER SECOND FOR THE OUTPUT GIF. IF NONE, THE ORIGINAL FPS WILL BE USED.
-
-        >>> RETURNS: NONE
-        """
-        try:
-            # BUILD THE FFMPEG COMMAND BASED ON THE PROVIDED PARAMETERS.
-            command = [
-                self.ffpe_path,
-                "-hide_banner",
-                "-i",
-                input_file,
-                "-ss",
-                start_time,
-                "-t",
-                duration,
-                "-vf",
-                "scale=-1:-1:flags=lanczos",
-            ]
-
-            if fps is not None:
-                command += ["-r", str(fps)]
-
-            command += ["-y", output_file]
-
-            process = subprocess.Popen(
-                command,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                universal_newlines=True,
-                encoding="utf-8",
-                shell=True,
-                bufsize=1,
-            )
-
-            for line in process.stdout:
-                print(line, end="")
-
-            print(f"\nMEDIACLIP COMPLETED: {output_file}")
-
-        except subprocess.CalledProcessError as e:
-            clear_console()
-            print(f"MEDIACLIP FAILED WITH ERROR: {e}")
-        except Exception as e:
-            clear_console()
-            print(f"AN ERROR OCCURRED: {e}")
 
         gc.collect()
 
@@ -910,10 +904,6 @@ class ffpe:
                     "[bold yellow]MEDIACLIP FILE CONVERTION.. [/bold yellow]", width=35
                 )
             )
-            # console.print(
-            #     "[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/bold magenta]\n"
-            # )
-            
             with tqdm(
                 total=100,
                 desc="MEDIACLIP",

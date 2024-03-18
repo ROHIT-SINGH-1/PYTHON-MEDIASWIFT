@@ -13,19 +13,18 @@
 ### EXPLORE THE CAPABILITIES OF `MediaSwift` AND ELEVATE YOUR PYTHON MULTIMEDIA PROJECTS WITH SIMPLICITY AND EFFICIENCY.
 
 - ## SUPPORTED VIDEO CODEC'S :
-`h264`, `libx264`, `mpeg4`, `vp9`, `av1`, `hevc`, `mjpeg`, `H.265 / HEVC`, `VP8`, `VP9`, `AV1`, `VC1`, `MPEG1`, `MPEG2`, `H.263`, `Theora`, `MJPEG`, `MPEG-3`, `MPEG-4` **...** 
+`h264`, `libx264`, `mpeg4`, `vp9`, `av1`, `hevc`, `mjpeg`, `H.265 / HEVC`, `VP8`, `VP9`, `AV1`, `VC1`, `MPEG1`, `MPEG2`, `H.263`, `Theora`, `MJPEG`, `MPEG-3`, `MPEG-4` **. . .** 
 
 - ## SUPPORTED AUDIO CODEC'S :
-`aac`, `mp3`, `opus`, `vorbis`, `pcm`, `alac`, `flac`, `wv`, `ape`, `mka`, `opus`, `ac3`, `eac3`, `alac` **...** 
+`aac`, `mp3`, `opus`, `vorbis`, `pcm`, `alac`, `flac`, `wv`, `ape`, `mka`, `opus`, `ac3`, `eac3`, `alac` **. . .** 
 
 - ## SUPPORTED FILE EXTENSION'S :
-**VIDEO FORMATS :** `.mp4`, `.avi`, `.mkv`, `.webm`, `.mov`, `.wmv`, `.webm`, `.flv`, `.mov`, `.wmv`, `.hevc`, `.prores`, `.dv` **...** 
+**VIDEO FORMATS :** `.mp4`, `.avi`, `.mkv`, `.webm`, `.mov`, `.wmv`, `.webm`, `.flv`, `.mov`, `.wmv`, `.hevc`, `.prores`, `.dv` **. . .** 
 
-**AUDIO FORMATS :** `.mp3`, `.aac`, `.ogg`, `.wav`, `.flac`, `.flac`, `.m4a`, `.ogg`, `.wv`, `.ape`, `.mka`, `.opus`, `mpc`, `.tak`, `.alac` **...** 
+**AUDIO FORMATS :** `.mp3`, `.aac`, `.ogg`, `.wav`, `.flac`, `.flac`, `.m4a`, `.ogg`, `.wv`, `.ape`, `.mka`, `.opus`, `mpc`, `.tak`, `.alac` **. . .** 
 
 - ## SUPPORTED HARDWARE ACCELERATION :
-**HARDWARE ACCELERATION :** `cuda`, `dxva2`, `qsv`, `d3d11va`, `opencl`, `vulkan` .
-
+**HARDWARE ACCELERATION :** `cuda`, `dxva2`, `qsv`, `d3d11va` **. . .**
 
 ## IMPORTANT NOTICE :
 - **THEY ALSO SUPPORT HARDWARE ACCELERATION FOR MEDIA FILE CONVERTION .**
@@ -42,11 +41,11 @@ from MediaSwift import ffpe
 
 info = ffpe()
 
-info.formats()
 info.codecs()
+info.formats()
 info.hwaccels()
 
-# GET INFORMATION ABOUT THE CODEC'S ENCODER.
+# GET INFORMATION ABOUT THE SPECIFIC CODEC'S ENCODER.
 info.codecs(encoder="aac")
 
 ```
@@ -74,13 +73,29 @@ from MediaSwift import ffpl
 
 play = ffpl()
 media_file = r"PATH_TO_INPUT_FILE"
-# INCREASE VOLUME BY 10 DB
-volume = 5
-media_file = r"PATH_TO_MEDIA_FILE"
+
 play.play(media_file)
+# USE noborder=True TO REMOVE WINDOW BORDER
+play.play(media_file, noborder=True)
 ```
 
-#### QUICK TIP: USE THE `.play()` METHOD TO PLAY MEDIA FILES.
+- ## USING VOLUME IN FFPL .
+
+```python
+from MediaSwift import ffpl
+
+# INCREASE VOLUME BY 5 DB
+play = ffpl()
+volume = 5
+media_file = r"PATH_TO_MEDIA_FILE"
+
+play.play(media_file)
+#         OR
+play.play(media_file, noborder=True)
+```
+
+#### QUICK TIP: USE THE `.play()` METHOD TO PLAY MEDIA FILES .
+#### USE `noborder=True` TO REMOVE WINDOW BORDER .
 
 - ## USING THE `ffpr` CLASS
 

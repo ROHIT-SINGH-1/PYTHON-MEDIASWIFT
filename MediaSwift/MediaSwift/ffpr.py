@@ -26,11 +26,11 @@ class FFProbeResult:
 
     ⇨ METHOD'S
     -----------
-    >>> DURATION() ⇨  OPTIONAL[FLOAT]:
+    >>> DURATION() ⇨  OPTIONAL FLOAT:
         >>> GET THE DURATION OF THE MULTIMEDIA FILE.
-    >>> BIT_RATE() ⇨  OPTIONAL[FLOAT]:
+    >>> BIT_RATE() ⇨  OPTIONAL FLOAT:
         >>> GET THE BIT RATE OF THE MULTIMEDIA FILE.
-    >>> NB_STREAMS() ⇨  OPTIONAL[INT]:
+    >>> NB_STREAMS() ⇨  OPTIONAL INT:
         >>> GET THE NUMBER OF STREAMS IN THE MULTIMEDIA FILE.
     ⇨ STREAMS():
         >>> GET THE DETAILS OF INDIVIDUAL STREAMS IN THE MULTIMEDIA FILE.
@@ -84,7 +84,7 @@ class ffpr:
 
     ⇨ METHOD'S
     -----------
-    PROBE[ INPUT_FILE ] ⇨ OPTIONAL:
+    PROBE INPUT_FILE ⇨ OPTIONAL:
     --------------------------------
         >>> ANALYZE MULTIMEDIA FILE USING FFPR AND RETURN THE RESULT.
     ⇨ PRETTY( INFO )
@@ -172,133 +172,97 @@ class ffpr:
     @lru_cache(maxsize=None)
     def pretty(self, info: FFProbeResult):
         """
-        >>> PRINT READABLE SUMMARY OF THE FFPR ANALYSIS RESULT, MAKE BEAUTIFY MEDIA INFO SHOW.
-
-        ⇨ PARAMETER'S
-        --------------
-        INFO
-        -------
-            >>> RESULT OF THE FFPR ANALYSIS.
-            >>> RETURN: NONE
+        >>> PLEASE ENHANCE THE FORMATTING USING THE PRETTY() FUNCTION TO PROVIDE MORE POLISHED INFORMATION .
         """
         if not info:
-            self.console.print(
+            console.print(
                 "[bold magenta]WARNING: NO INFORMATION AVAILABLE.[/bold magenta]"
             )
             return
 
-        self.console.print(
-            "\n[bold magenta]MEDIA FILE ANALYSIS SUMMARY:[/bold magenta]"
-        )
-        self.console.print("[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+        os.system("cls")
+        console.print("\n[bold magenta]MEDIA FILE ANALYSIS SUMMARY:[/bold magenta]")
+        console.print("[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
 
         table = Table(show_header=True, header_style="bold magenta", box=ROUNDED)
-        table.add_column("[bold magenta]PROPERTY[/bold magenta]")
-        table.add_column("[bold magenta]VALUE[/bold magenta]")
+        table.add_column("[bold magenta]PROPERTY[/bold magenta]", style="cyan")
+        table.add_column("[bold magenta]VALUE[/bold magenta]", style="cyan")
 
         table.add_row(
-            "[bold magenta]FILE[/bold magenta]", info.info["format"]["filename"].upper()
+            "[bold magenta]FILENAME[/bold magenta]",
+            info.info["format"]["filename"].upper(),
         )
-
-        try:
-            bit_rate_kbps = info.BIT_RATE
-            table.add_row(
-                "[bold magenta]BIT RATE[/bold magenta]",
-                f"{bit_rate_kbps} kbit/s".upper(),
-            )
-        except (AttributeError, KeyError, ValueError):
-            table.add_row("[bold magenta]BIT RATE[/bold magenta]", "N/A")
-
-        try:
-            duration_seconds = info.DURATION
-            minutes, seconds = divmod(duration_seconds, 60)
-            table.add_row(
-                "[bold magenta]DURATION[/bold magenta]",
-                f"{int(minutes)}:{int(seconds)} min".upper(),
-            )
-        except (AttributeError, KeyError, ValueError):
-            table.add_row("[bold magenta]DURATION[/bold magenta]", "N/A")
-
         table.add_row(
-            "[bold magenta]NUMBER OF STREAMS[/bold magenta]",
-            str(info.NB_STREAMS).upper(),
+            "[bold magenta]NB_STREAMS[/bold magenta]",
+            str(info.info["format"]["nb_streams"]).upper(),
+        )
+        table.add_row(
+            "[bold magenta]NB_PROGRAMS[/bold magenta]",
+            str(info.info["format"]["nb_programs"]).upper(),
+        )
+        table.add_row(
+            "[bold magenta]FORMAT_NAME[/bold magenta]",
+            info.info["format"]["format_name"].upper(),
+        )
+        table.add_row(
+            "[bold magenta]FORMAT_LONG_NAME[/bold magenta]",
+            info.info["format"]["format_long_name"].upper(),
+        )
+        table.add_row(
+            "[bold magenta]START_TIME[/bold magenta]",
+            str(info.info["format"]["start_time"]).upper(),
+        )
+        table.add_row(
+            "[bold magenta]DURATION[/bold magenta]",
+            str(info.info["format"]["duration"]).upper(),
+        )
+        table.add_row(
+            "[bold magenta]SIZE[/bold magenta]",
+            str(info.info["format"]["size"]).upper(),
+        )
+        table.add_row(
+            "[bold magenta]BIT_RATE[/bold magenta]",
+            str(info.info["format"]["bit_rate"]).upper(),
+        )
+        table.add_row(
+            "[bold magenta]PROBE_SCORE[/bold magenta]",
+            str(info.info["format"]["probe_score"]).upper(),
         )
 
-        self.console.print(table)
+        console.print(table)
 
-        for i, stream in enumerate(info.STREAMS):
-            stream_type = stream.get("codec_type", "N/A")
-            stream_type_upper = (
-                stream_type.upper()
-                if stream_type.lower() in ["video", "audio"]
-                else stream_type
-            )  # CONVERT TO UPPERCASE ONLY IF IT'S "VIDEO" OR "AUDIO".
-
-            title = Text(f"{stream_type_upper} STREAM {i + 1}", style="bold magenta")
-            title.stylize("[underline]")
-
-            self.console.print(title)
-
-            sub_table = Table(
+        for stream_number, stream_info in enumerate(info.STREAMS, start=1):
+            stream_table = Table(
                 show_header=True, header_style="bold magenta", box=ROUNDED
             )
-            sub_table.add_column("[bold magenta]ATTRIBUTE[/bold magenta]")
-            sub_table.add_column("[bold magenta]VALUE[/bold magenta]")
-
-            sub_table.add_row(
-                "[bold magenta]CODEC[/bold magenta]",
-                str(stream.get("codec_name", "N/A")).upper(),
+            stream_table.add_column(
+                "[bold magenta]STREAM {} [/bold magenta]".format(stream_number),
+                style="cyan",
             )
-            sub_table.add_row(
-                "[bold magenta]PROFILE[/bold magenta]",
-                str(stream.get("profile", "N/A")).upper(),
+            stream_table.add_column("[bold magenta]VALUE[/bold magenta]", style="cyan")
+
+            stream_type = (
+                "VIDEO STREAM: "
+                if stream_info["codec_type"] == "video"
+                else "AUDIO STREAM: "
             )
+            stream_table.add_row(f"[bold magenta]{stream_type}[/bold magenta]", "")
 
-            try:
-                bit_rate_kbps = int(stream.get("bit_rate", "N/A")) / 1000
-                sub_table.add_row(
-                    "[bold magenta]BIT RATE[/bold magenta]",
-                    f"{bit_rate_kbps} kbit/s".upper(),
-                )
-            except (KeyError, ValueError):
-                sub_table.add_row("[bold magenta]BIT RATE[/bold magenta]", "N/A")
+            for key, value in stream_info.items():
+                if isinstance(
+                    value, dict
+                ):  # If the value is a dictionary, format it nicely
+                    formatted_value = ", ".join(f"{k}: {v}" for k, v in value.items())
+                    stream_table.add_row(
+                        f"[bold magenta]{key.upper()}[/bold magenta]",
+                        formatted_value.upper(),
+                    )
+                else:
+                    stream_table.add_row(
+                        f"[bold magenta]{key.upper()}[/bold magenta]",
+                        str(value).upper(),
+                    )
 
-            sub_table.add_row(
-                "[bold magenta]TYPE[/bold magenta]",
-                str(stream.get("codec_type", "N/A")).upper(),
-            )
-            sub_table.add_row(
-                "[bold magenta]LANGUAGE[/bold magenta]",
-                (
-                    stream["tags"].get("language", "N/A").upper()
-                    if "tags" in stream
-                    else "N/A"
-                ),
-            )
-
-            if stream["codec_type"] == "video":
-                sub_table.add_row(
-                    "[bold magenta]RESOLUTION[/bold magenta]",
-                    f"{stream.get('width', 'N/A')}x{stream.get('height', 'N/A')}".upper(),
-                )
-                sub_table.add_row(
-                    "[bold magenta]DISPLAY ASPECT RATIO[/bold magenta]",
-                    str(stream.get("display_aspect_ratio", "N/A")).upper(),
-                )
-                sub_table.add_row(
-                    "[bold magenta]FRAME RATE[/bold magenta]",
-                    str(stream.get("r_frame_rate", "N/A")).upper(),
-                )
-            elif stream["codec_type"] == "audio":
-                sub_table.add_row(
-                    "[bold magenta]CHANNELS[/bold magenta]",
-                    str(stream.get("channels", "N/A")).upper(),
-                )
-                sub_table.add_row(
-                    "[bold magenta]SAMPLE RATE[/bold magenta]",
-                    str(stream.get("sample_rate", "N/A")).upper(),
-                )
-
-            self.console.print(sub_table)
+            console.print(stream_table)
 
         gc.collect()

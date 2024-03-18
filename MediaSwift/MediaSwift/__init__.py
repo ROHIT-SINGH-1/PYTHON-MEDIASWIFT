@@ -3,9 +3,7 @@
 
 """
 MEDIASWIFT - A PYTHON LIBRARY FOR MULTIMEDIA PROCESSING.
-AUTHOR: ROHIT SINGH
 """
-
 
 import os
 
@@ -15,7 +13,7 @@ from .ffpl import ffpl
 
 __all__ = ["ffpe", "ffpr", "ffpl", "version", "author"]
 
-__version__ = "2.3.1"
+__version__ = "2.3.2"
 
 __author__ = "ROHIT SINGH"
 
@@ -23,6 +21,7 @@ __author__ = "ROHIT SINGH"
 def author():
     """
     >>> RETURNS THE LIBRARY AUTHOR NAME.
+    AUTHOR: ROHIT SINGH
 
     RETURN:
     -------

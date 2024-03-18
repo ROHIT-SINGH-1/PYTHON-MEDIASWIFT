@@ -10,7 +10,7 @@ def read_file(filename):
 
 setup(
     name="MediaSwift",
-    version="2.3.1",
+    version="2.3.2",
     author="ROHIT SINGH",
     author_email="rs3232263@gmail.com",
     description="A MediaSwift PYTHON PACKAGE FOR MEDIA CONVERSION PLAY AND PROBING.",
