@@ -15,8 +15,11 @@ from rich.box import ROUNDED
 from rich.table import Table
 from rich.console import Console
 from rich.panel import Panel
-from rich.syntax import Syntax
+from rich.traceback import install
 
+# from rich.syntax import Syntax
+
+install(show_locals=True)
 console = Console()
 
 
@@ -288,17 +291,15 @@ class ffpe:
         if len(input_files) > 1:
             clear_console()
             console.print(
-                Panel(
-                    f"[bold yellow]CONVERTING MULTIPLE MEDIA FILES ⇌  {len(input_files)}[/bold yellow]",
-                    width=45,
+                Panel.fit(
+                    f"[bold yellow]😎 CONVERTING MULTIPLE MEDIA FILES ⇌  {len(input_files)}[/bold yellow]",
                 )
             )
         elif len(input_files) == 1:
             clear_console()
             console.print(
-                Panel(
-                    f"[bold yellow]CONVERTING SINGLE MEDIA FILE ⇌  {len(input_files)}[/bold yellow]",
-                    width=45,
+                Panel.fit(
+                    f"[bold yellow]😎 CONVERTING SINGLE MEDIA FILE ⇌  {len(input_files)}[/bold yellow]",
                 )
             )
 
@@ -342,9 +343,7 @@ class ffpe:
             return
 
         time.sleep(2)
-        console.print(
-            Panel("[bold green] FILE CONVERSION COMPLETED ✅[/bold green]", width=40)
-        )
+        console.print("[bold green]⇨ FILE CONVERSION COMPLETED ✅[/bold green]")
 
     @lru_cache(maxsize=None)
     def convert_single(
@@ -513,15 +512,33 @@ class ffpe:
                 clear_console()
                 error_message = f"{combined_output.upper()}"  # Convert to uppercase and apply bold and red formatting
                 explanation = (
-                    "PLEASE MAKE SURE YOU HAVE PROVIDED VALID NAMES AND OPTIONS."
+                    "1. MAKE SURE ALL ENTRIES ARE ACCURATELY FORMATTED AND SUPPORTED.\n"
+                    "2. PLEASE MAKE SURE YOU HAVE PROVIDED VALID NAMES AND OPTIONS.\n"
                 )
-                syntax = Syntax(
-                    f"{error_message}\n\n{explanation}",
-                    "bash",
-                    theme="monokai",
-                    word_wrap=True,
+                # syntax = Syntax(
+                #     f"{error_message}",
+                #     "bash",
+                #     theme="monokai",
+                #     word_wrap=True,
+                # )
+
+                error_message = Panel.fit(
+                    f"{error_message}",
+                    #   Syntax(f"{error_message}", "javascript"),
+                    title="ERROR :Dizzy_Face:",
+                    border_style="red",
+                    style="bold red",
                 )
-                console.print(Panel(syntax, title="ERROR", border_style="red"))
+
+                explanation = Panel.fit(
+                    f"{explanation}",
+                    title="EXPLANATION :thinking_face:",
+                    border_style="green",
+                    style="bold green",
+                )
+                # console.print(Panel(syntax, title="ERROR :Dizzy_Face:", border_style="red"))
+                console.print(error_message)
+                console.print(explanation)
             if "error" in combined_output.lower():
                 self.has_error = True
 
@@ -609,7 +626,7 @@ class ffpe:
                 console.print(table)
 
             console.print(
-                "[bold magenta]ENCODER AVOPTIONS[/bold magenta]"
+                "[bold magenta]ENCODER AVOPTIONS:[/bold magenta]"
                 if encoder
                 else "[bold magenta]CODECS FEATURES LEGEND: [/bold magenta]"
             )
@@ -686,14 +703,17 @@ class ffpe:
                 console.print("━━━━━━━━━━━━━━━━━━━━━━")
                 console.print(table)
 
+            return "-"
         except subprocess.CalledProcessError as e:
             clear_console()
             console.print(f"[bold red]FFPE COMMAND FAILED WITH ERROR: {e}[/bold red]")
+            return "-"
         except Exception as e:
             clear_console()
             console.print(f"[bold red]AN ERROR OCCURRED: {e}[/bold red]")
-
-        gc.collect()
+            return "-"
+        finally:
+            gc.collect()
 
     @lru_cache(maxsize=None)
     def formats(self) -> None:  # CALL THE GARBAGE COLLECTOR TO FREE UP RESOURCES.
@@ -768,14 +788,18 @@ class ffpe:
             console.print(legend)
             console.print("━━━━━━━━━━━━━━━━━━━━━━")
             console.print(table)
+
+            return "-"
         except subprocess.CalledProcessError as e:
             clear_console()
             console.print(f"[bold red]FFPE COMMAND FAILED WITH ERROR: {e}[/bold red]")
+            return "-"
         except Exception as e:
             clear_console()
             console.print(f"[bold red]AN ERROR OCCURRED: {e}[/bold red]")
-
-        gc.collect()
+            return "-"
+        finally:
+            gc.collect()
 
     @lru_cache(maxsize=None)
     def hwaccels(self) -> None:
@@ -812,20 +836,23 @@ class ffpe:
                 table.add_row(hwaccel.upper())
             console.print(table)
 
+            return "-"
         except subprocess.CalledProcessError as e:
             clear_console()
             console.print(f"[bold red]FFPE COMMAND FAILED WITH ERROR: {e}[/bold red]")
+            return "-"
         except Exception as e:
             clear_console()
             console.print(f"[bold red]AN ERROR OCCURRED: {e}[/bold red]")
-
-        gc.collect()
+            return "-"
+        finally:
+            gc.collect()
 
     @lru_cache(maxsize=None)
     def MediaClip(
         self,
         input_file: str,
-        output_file: str,
+        output_dir: str,
         time_range: str,
         fps: Optional[int] = None,
     ) -> None:
@@ -860,6 +887,9 @@ class ffpe:
         >>> RETURNS: NONE
         """
         try:
+            if not os.path.exists(input_file):
+                raise FileNotFoundError(f"INPUT FILE ('{input_file}') NOT FOUND.")
+
             start_time, end_time = map(str.strip, time_range.strip("()").split(","))
             start_seconds = sum(
                 float(x) * 60**i for i, x in enumerate(reversed(start_time.split(":")))
@@ -868,6 +898,12 @@ class ffpe:
                 float(x) * 60**i for i, x in enumerate(reversed(end_time.split(":")))
             )
             duration_seconds = end_seconds - start_seconds
+
+            # Extract the filename without the extension
+            input_filename = os.path.splitext(os.path.basename(input_file))[0]
+
+            # Construct the output file path by appending the filename with ".gif" in the specified output directory
+            output_file = os.path.join(output_dir, f"{input_filename}.gif")
 
             # BUILD THE FFMPEG COMMAND BASED ON THE PROVIDED PARAMETERS.
             command = [
@@ -898,18 +934,20 @@ class ffpe:
                 universal_newlines=True,
             )
 
-            os.system("cls")
+            clear_console()
             console.print(
                 Panel(
-                    "[bold yellow]MEDIACLIP FILE CONVERTION.. [/bold yellow]", width=35
+                    "[bold yellow]😎 MEDIACLIP FILE CONVERTION.. [/bold yellow]", width=35
                 )
             )
+
             with tqdm(
                 total=100,
-                desc="MEDIACLIP",
+                desc="⇨ MEDIACLIP",
                 unit="%",
                 dynamic_ncols=True,
                 bar_format="{l_bar}{bar:40}| {n_fmt}/{total_fmt} - TIME: {elapsed}",
+                colour="green",
             ) as progress_bar:
                 for line in process.stderr:
                     match = re.search(r"time=(\d+:\d+:\d+.\d+)", line)
@@ -923,20 +961,22 @@ class ffpe:
                         progress_percentage = int(np.ceil(progress * 100))
                         progress_bar.update(progress_percentage - progress_bar.n)
 
-            console.print(
-                Panel("[bold green]⇨ CONVERSION COMPLETED ✅[/bold green]", width=30)
-            )
-            time.sleep(5)
-            os.system("cls")
+            console.print("[bold green]\n⇨ CONVERSION COMPLETED ✅[/bold green]")
 
+            time.sleep(5)
+            clear_console()
+
+        except FileNotFoundError as e:
+            clear_console()
+            print(f"FILENOTFOUNDERROR: {e}")
         except subprocess.CalledProcessError as e:
             clear_console()
             print(f"MEDIACLIP FAILED WITH ERROR: {e}")
         except Exception as e:
             clear_console()
             print(f"AN ERROR OCCURRED: {e}")
-
-        gc.collect()
+        finally:
+            gc.collect()
 
 
 # CALL THE GARBAGE COLLECTOR TO FREE UP RESOURCES.

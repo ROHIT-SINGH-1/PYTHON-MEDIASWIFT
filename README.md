@@ -26,7 +26,7 @@
 - ## SUPPORTED HARDWARE ACCELERATION :
 **HARDWARE ACCELERATION :** `cuda`, `dxva2`, `qsv`, `d3d11va` **. . .**
 
-## IMPORTANT NOTICE :
+## ❗IMPORTANT NOTE:
 - **THEY ALSO SUPPORT HARDWARE ACCELERATION FOR MEDIA FILE CONVERTION .**
 - **SUPPORT DOLBY DIGITAL PLUS AND DOLBY DIGITAL AUDIO CODEC `.eac3`, `.ac3` .** 
   
@@ -37,16 +37,16 @@
 - ## LIST THE AVAILABLE `.CODEC'S()`, `.FORMATE'S()`  AND `.HWACCEL'S()` :
   
 ```python
-from MediaSwift import ffpe
+from MediaSwift import *
 
-info = ffpe()
+INFO = ffpe()
 
-info.codecs()
-info.formats()
-info.hwaccels()
+print(INFO.codecs())
+print(INFO.formats())
+print(INFO.hwaccels())
 
-# GET INFORMATION ABOUT THE SPECIFIC CODEC'S ENCODER.
-info.codecs(encoder="aac")
+# GET CODECS ENCODING
+print(INFO.codecs(encoder='aac'))
 
 ```
 
@@ -58,10 +58,15 @@ info.codecs(encoder="aac")
 
 ```python
 
-from MediaSwift import version
+from MediaSwift import *
 
-version_info = version()
-print(version_info)
+# GET AND PRINT AUTHOR INFORMATION
+AUTHOR_INFO = author()
+print(AUTHOR_INFO)
+
+# GET AND PRINT VERSION INFORMATION
+VERSION_INFO = version()
+print(VERSION_INFO)
 
 ```
 
@@ -69,35 +74,36 @@ print(version_info)
 #### THE `ffpl` CLASS PROVIDES METHODS FOR PLAY MEDIA FILES. HERE ARE SOME EXAMPLES OF HOW TO USE THESE METHOD:
 
 ```python
-from MediaSwift import ffpl
-
-play = ffpl()
-media_file = r"PATH_TO_INPUT_FILE"
-
-play.play(media_file)
-# USE noborder=True TO REMOVE WINDOW BORDER
-play.play(media_file, noborder=True)
-```
-
-- ## USING VOLUME IN FFPL .
-
-```python
-from MediaSwift import ffpl
+from MediaSwift import *
 
 # INCREASE VOLUME BY 5 DB
-play = ffpl()
-volume = 5
-media_file = r"PATH_TO_MEDIA_FILE"
+PLAY = ffpl()
+MEDIA_FILE = r"PATH_TO_MEDIA_FILE"                                        # PLAY SINGE MEDIA FILE 
+MEDIA_FILE = r"PATH_TO_MEDIA_FILE_1", r"PATH_TO_MEDIA_FILE_2"             # PLAY MULTIPLE MEDIA FILE 
 
-play.play(media_file)
-#         OR
-play.play(media_file, noborder=True)
+PLAY.play(MEDIA_FILE, volume=5)
+PLAY.play_multiple(media_file, volume=5)
+```
+
+- ## USING `VOLUME` AND `NOBORDER` IN FFPL .
+
+```python
+from MediaSwift import *
+
+# INCREASE VOLUME BY 5 DB
+PLAY = ffpl()
+MEDIA_FILE = r"PATH_TO_MEDIA_FILE"                                        # PLAY SINGE MEDIA FILE 
+MEDIA_FILE = r"PATH_TO_MEDIA_FILE_1", r"PATH_TO_MEDIA_FILE_2"             # PLAY MULTIPLE MEDIA FILE 
+
+# USE noborder=True TO REMOVE PLAYER WINDOW BORDER.
+PLAY.play(MEDIA_FILE, volume=5, noborder=True)
+PLAY.play_multiple(media_file, volume=5, noborder=True)
 ```
 
 #### QUICK TIP: USE THE `.play()` METHOD TO PLAY MEDIA FILES .
 #### USE `noborder=True` TO REMOVE WINDOW BORDER .
 
-- ## USING THE `ffpr` CLASS
+- ## USING THE `ffpr`.
 
 #### THE `ffpr` CLASS PROVIDES METHODS FOR PROBING MEDIA FILES. HERE ARE SOME EXAMPLES OF HOW TO USE THESE METHODS :
 
@@ -106,10 +112,16 @@ from MediaSwift import ffpr
 
 DETAILS = ffpr()
 INFO = DETAILS.probe(r"PATH_TO_INPUT_FILE")
+
+# ENHANCE THE APPEALING CONTENT
+INFO = DETAILS.probe(r"PATH_TO_INPUT_FILE", pretty=True) 
 DETAILS.pretty(INFO)
 ```
 
-#### IN THIS EXAMPLE, REPLACE `"PATH_TO_INPUT_FILE"` WITH THE ACTUAL PATH TO YOUR MEDIA FILE. THE `.probe` METHOD RETURNS A DICTIONARY CONTAINING INFORMATION. ABOUT THE MEDIA FILE. THE `.pretty`.
+#### IN THIS EXAMPLE, SUBSTITUTE `"PATH_TO_INPUT_FILE"` WITH THE ACTUAL FILE PATH TO YOUR MEDIA FILE. THE `.PROBE` METHOD RETURNS A DICTIONARY CONTAINING DETAILED INFORMATION ABOUT THE MEDIA FILE. WHEN USING `PRETTY=TRUE`, THE CONTENT IS DISPLAYED IN A MORE VISUALLY APPEALING FORMAT.
+
+#### SPECIFY `pretty=True` TO DISPLAY THE INFORMATION IN A VISUALLY ENHANCED FORMAT.
+
 
 - ## USING THE `ffpe` CLASS
 
@@ -119,9 +131,9 @@ DETAILS.pretty(INFO)
 ```python
 from MediaSwift import ffpe
 
-ffmpe = ffpe()
+FFMPL = ffpe()
 
-ffmpe.convert(
+FFMPL.convert(
     input_files = r"PATH_TO_INPUT_FILE" ,         # INPUT FILE PATH
     output_dir =  r"PATH_TO_OUTPUT_FOLDER" ,      # OUTPUT PATH
     cv='h264',        # VIDEO CODEC
@@ -132,6 +144,8 @@ ffmpe.convert(
     ac=2,             # AUDIO CHANNELS
     ba='192k',        # AUDIO BITRATE
     r=30,             # VIDEO FRAME RATE
+    bv='50m',         # VIDEO BITRATE
+    preset='fast'     # PRESET FOR ENCODING
     f='mp4',          # OUTPUT FORMAT
 
 )
@@ -142,19 +156,19 @@ ffmpe.convert(
 ```python
 from MediaSwift import ffpe
 
-ffpe_instance = ffpe()
+FFPE_INSTANCE = ffpe()
 
-input_files = [
+INPUT_FILES = [
     r"PATH_TO_INPUT_FILE",
     r"PATH_TO_INPUT_FILE",
     # ADD MORE FILE PATHS AS NEEDED
-]                                                           # input_files [MULTIPLE CONVERT]
-input_files =  r'PATH_TO_INPUT_FILE'                        # input_files [SINGLE CONVERT]
-output_dir =   r"PATH_TO_OUTPUT_FOLDER"
+]                                                           # INPUT_FILES [MULTIPLE CONVERT]
+INPUT_FILES =  r'PATH_TO_INPUT_FILE'                        # INPUT_FILES [SINGLE CONVERT]
+OUTPUT_DIR =   r"PATH_TO_OUTPUT_FOLDER"
 
-ffpe_instance.convert_with_threading(
-    input_files = input_files, # INPUT FILE PATH
-    output_dir = output_dir,   # OUTPUT PATH
+FFPE_INSTANCE.convert(
+    input_files = INPUT_FILES, # INPUT FILE PATH
+    output_dir = OUTPUT_DIR,   # OUTPUT PATH
     cv='h264',        # VIDEO CODEC
     ca='aac',         # AUDIO CODEC
     s='1920x1080',    # VIDEO RESOLUTION
@@ -162,6 +176,8 @@ ffpe_instance.convert_with_threading(
     ar=44100,         # AUDIO SAMPLE RATE
     ac=2,             # AUDIO CHANNELS
     ba='192k',        # AUDIO BITRATE
+    bv='50m',         # VIDEO BITRATE
+    preset='fast'     # PRESET FOR ENCODING
     r=30,             # VIDEO FRAME RATE
     f='mp4',          # OUTPUT FORMAT
 )
@@ -169,19 +185,20 @@ ffpe_instance.convert_with_threading(
 #### EXAMPLE ⇨ CONVERT MULTIPLE VIDEO INTO AUDIO FILE USING THIS : 
 
 ```python
-from MediaSwift import *
-ffpe_instance = ffpe()
+
+from MediaSwift import ffpe
+FFPE_INSTANCE = ffpe()
 
 # DEFINE INPUT FILES AND OUTPUT DIRECTORY.
-input_files = [ r'PATH_TO_INPUT_FILE', r'PATH_TO_INPUT_FILE' ]    # input_files [MULTIPLE CONVERT]
-input_files =   r'PATH_TO_INPUT_FILE'                              # input_files [SINGLE CONVERT]
+INPUT_FILES = [ r'PATH_TO_INPUT_FILE', r'PATH_TO_INPUT_FILE' ]     # INPUT_FILES [MULTIPLE CONVERT]
+INPUT_FILES =   r'PATH_TO_INPUT_FILE'                              # INPUT_FILES [SINGLE CONVERT]
 
-output_dir = r"PATH_TO_OUTPUT_FOLDER"
+OUTPUT_DIR =  r"PATH_TO_OUTPUT_FOLDER"
 
 # PERFORM MULTIMEDIA FILE CONVERSION USING FFPE.
-ffpe_instance.convert(
-    input_files=input_files,
-    output_dir=output_dir,
+FFPE_INSTANCE.convert(
+    input_files=INPUT_FILES,
+    output_dir=OUTPUT_DIR ,
     hwaccel="cuda",   # HARDWARE ACCELERATION
     ar=44100,         # AUDIO SAMPLE RATE
     ac=2,             # AUDIO CHANNELS
@@ -208,23 +225,23 @@ CONVERTER.MediaClip(INPUT_FILE, OUTPUT_FILE, TIME_RANGE)
 
 ```
 
-#### ⇨ QUICK TIP : USE THE `.MediaClip()` METHOD TO EXTRACTS SPECIFIC PART OF VIDEO AND CONVERTS IT TO GIF.
+#### ⇨ QUICK TIP : USE THE `.MediaClip()` METHOD TO EXTRACTS SPECIFIC PART OF VIDEO AND CONVERTS IT INTO GIF.
 
 
-- ## IMPORT OBJECT AND MODULE :
+- ## 🔎 IMPORT OBJECT AND MODULE :
 ```python
 from MediaSwift import ffpe, ffpl, ffpr
 from MediaSwift import *
 ```
 
-- ## INSTALLATION :
+- ## ⚙️ INSTALLATION :
 
 ```bash
 pip install MediaSwift
 ```
 
-- ## AUTHOR INFORMATION :
+- ## 😃 AUTHOR INFORMATION :
 
-**THIS PROJECT IS MAINTAINED BY ` ROHIT SINGH `  . FOR ANY QUERIES OR CONTRIBUTIONS TO CHECK MY GITHUB, PLEASE REACH OUT TO US. THANK YOU FOR USING `MediaSwift` PYTHON LIBRARY, NEW LIBRARY RELEASE 2024 .**
+**THIS PYTHON LIBRARY PROJECT IS DONE BY ` ROHIT SINGH `  . FOR ANY QUERIES TO CHECK MY GITHUB, THANK YOU FOR USING `MediaSwift` PYTHON LIBRARY,LIBRARY RELEASE IN 2024 .**
 
 [![GitHub Profile](https://img.shields.io/badge/GitHub-ROHIT%20SINGH-blue?style=flat-square&logo=github)](https://github.com/ROHIT-SINGH-1)

@@ -7,14 +7,19 @@ MEDIASWIFT - A PYTHON LIBRARY FOR MULTIMEDIA PROCESSING.
 
 import os
 
+from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
+
+console = Console()
+
 from .ffpe import ffpe
 from .ffpr import ffpr
 from .ffpl import ffpl
 
 __all__ = ["ffpe", "ffpr", "ffpl", "version", "author"]
 
-__version__ = "2.3.2"
-
+__version__ = "2.3.3"
 __author__ = "ROHIT SINGH"
 
 
@@ -39,7 +44,13 @@ def author():
     ```
     >>> RETURN: NONE
     """
-    return "PYTHON LIBRARY AUTHOR NAME: " + __author__
+    author_name = Text(
+        "😄 PYTHON LIBRARY AUTHOR NAME: " + __author__, style="bold magenta"
+    )
+    console.print(
+        Panel.fit(author_name, title="AUTHOR INFORMATION", border_style="green")
+    )
+    return " "
 
 
 def version():
@@ -62,15 +73,21 @@ def version():
     ```
     >>> RETURN: NONE
     """
-    return "PYTHON LIBRARY VERSION: " + __version__
+    version_info = Text(
+        "☑️  PYTHON LIBRARY VERSION: " + __version__, style="bold magenta"
+    )
+    console.print(
+        Panel.fit(version_info, title="VERSION INFORMATION", border_style="green")
+    )
+    return " "
 
 
-def add_ffmpeg_to_path():
+def add_ffpe_to_path():
     """
-    >>> ADD THE LIBRARY'S FFMPEG BINARY PATH TO THE SYSTEM PATH.
+    >>> ADD THE LIBRARY'S FFPE BINARY PATH TO THE SYSTEM PATH.
     """
     ffmpeg_path = os.path.join(os.path.dirname(__file__), "..", "bin")
     os.environ["PATH"] += os.pathsep + ffmpeg_path
 
 
-add_ffmpeg_to_path()
+add_ffpe_to_path()
