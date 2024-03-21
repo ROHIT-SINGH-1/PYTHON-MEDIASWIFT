@@ -46,13 +46,14 @@ class ffpl:
     >>> from MediaSwift import ffpl
     >>> PLAY = ffpl()
 
-    # INCREASE VOLUME BY 5 DB(DECIBEL)
-    >>> volume = 5
+        # INCREASE VOLUME BY 5 DB(DECIBEL)
     >>> MEDIA_FILE  = r"PATH_TO_MEDIA_FILE"
-    >>> PLAY.play(MEDIA_FILE )
 
-    >>> PLAY.play(MEDIA_FILE , noborder=True)
+    >>> PLAY.play(MEDIA_FILE , volume = 5, noborder=True)
+    >>> PLAY.play_multiple(MEDIA_FILE, volume=5, noborder=True)
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    >>> PLAY MULTIPLE MEDIA FILE USING play_multiple
 
     ```
     >>> RETURNS: NONE
@@ -74,6 +75,7 @@ class ffpl:
         >>> PLAY.play(MEDIA_FILE )
 
         >>> PLAY.play(MEDIA_FILE , noborder=True)
+        >>> PLAY.play_multiple(media_file, volume=5, noborder=True)
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         ```
         >>> RETURN: NONE
@@ -168,6 +170,7 @@ class ffpl:
             time.sleep(2)
             gc.collect()
             clear_console()
+            return " "
 
     @lru_cache(maxsize=None)
     def play_multiple(self, media_files, volume=0, noborder=False):
@@ -215,7 +218,7 @@ class ffpl:
                         "panic",
                         "-af",
                         f"volume={volume}dB",
-                        "-autoexit",  # Add this line
+                        "-autoexit",
                     ]
                     + (["-noborder"] if noborder else [])
                     + [str(media_file)]
@@ -226,13 +229,12 @@ class ffpl:
                         "MEDIA PLAYER. NOW PLAYING :Musical_Notes:", style="bold green"
                     )
                 )
-                process.wait()  # Wait for the process to complete
-
+                process.wait()
                 console.print(
                     Panel.fit(
                         f"FINISHED PLAYING ({media_file.upper()})", style="bold red"
                     )
-                )  # Add this line
+                )
                 time.sleep(2)
                 os.system("cls" if os.name == "nt" else "clear")
         finally:
@@ -242,3 +244,4 @@ class ffpl:
             time.sleep(2)
             clear_console()
             gc.collect()
+            return " "

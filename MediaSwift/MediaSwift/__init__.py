@@ -19,7 +19,7 @@ from .ffpl import ffpl
 
 __all__ = ["ffpe", "ffpr", "ffpl", "version", "author"]
 
-__version__ = "2.3.3"
+__version__ = "2.4.1"
 __author__ = "ROHIT SINGH"
 
 

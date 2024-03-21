@@ -16,8 +16,8 @@ from rich.table import Table
 from rich.console import Console
 from rich.panel import Panel
 from rich.traceback import install
-
-# from rich.syntax import Syntax
+from rich.syntax import Syntax
+from pathlib import Path
 
 install(show_locals=True)
 console = Console()
@@ -147,15 +147,9 @@ class ffpe:
 
         >>> SETS THE DEFAULT PATH TO THE FFMPEG EXECUTABLE AND INITIALIZES THE LOGGER.
         """
-        self.ffpe_path = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "bin", "ffpe.exe"
-        )
+        self.ffpe_path = Path(__file__).resolve().parent / "bin" / "ffpe.exe"
         self.logger = self._initialize_logger()
-
-        self._ffprobe_path = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "bin", "ffpr.exe"
-        )
-
+        self._ffprobe_path = Path(__file__).resolve().parent / "bin" / "ffpr.exe"
         self.has_error = False
 
     def _initialize_logger(self) -> logging.Logger:
@@ -515,28 +509,24 @@ class ffpe:
                     "1. MAKE SURE ALL ENTRIES ARE ACCURATELY FORMATTED AND SUPPORTED.\n"
                     "2. PLEASE MAKE SURE YOU HAVE PROVIDED VALID NAMES AND OPTIONS.\n"
                 )
-                # syntax = Syntax(
-                #     f"{error_message}",
-                #     "bash",
-                #     theme="monokai",
-                #     word_wrap=True,
-                # )
 
                 error_message = Panel.fit(
-                    f"{error_message}",
-                    #   Syntax(f"{error_message}", "javascript"),
+                    Syntax(
+                        f"{error_message}",
+                        "ini",
+                        theme="one-dark",
+                        word_wrap=True,
+                    ),
                     title="ERROR :Dizzy_Face:",
                     border_style="red",
-                    style="bold red",
                 )
 
                 explanation = Panel.fit(
-                    f"{explanation}",
+                    Syntax(f"{explanation}", "yaml", theme="one-dark"),
                     title="EXPLANATION :thinking_face:",
                     border_style="green",
                     style="bold green",
                 )
-                # console.print(Panel(syntax, title="ERROR :Dizzy_Face:", border_style="red"))
                 console.print(error_message)
                 console.print(explanation)
             if "error" in combined_output.lower():
@@ -937,7 +927,8 @@ class ffpe:
             clear_console()
             console.print(
                 Panel(
-                    "[bold yellow]😎 MEDIACLIP FILE CONVERTION.. [/bold yellow]", width=35
+                    "[bold yellow]😎 MEDIACLIP FILE CONVERTION.. [/bold yellow]",
+                    width=35,
                 )
             )
 

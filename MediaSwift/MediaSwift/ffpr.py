@@ -7,14 +7,28 @@ import json
 import subprocess
 from functools import lru_cache
 from typing import Optional
+
 from rich.console import Console
 from rich.table import Table
 from rich.text import Text
 from rich.box import ROUNDED
+from rich.tree import Tree
 from rich.traceback import install
+from pathlib import Path
 
 install(show_locals=True)
 console = Console()
+
+
+def clear_console():
+    # CLEAR CONSOLE SCREEN.
+    """
+    >>> CLEAR SCREEN FUNCTION.
+    """
+    if os.name == "nt":
+        _ = os.system("cls")  # FOR WINDOWS
+    else:
+        _ = os.system("clear")  # FOR LINUX/MACOS
 
 
 class FFProbeResult:
@@ -46,7 +60,7 @@ class FFProbeResult:
 
         >>> FFPR = ffpr()
         >>> INFO = FFPR.probe(r"PATH_TO_MEDIA_FILE")
-        >>> print(INFO)
+        >>> print(DETAILS.analyze(INFO))
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         ```
 
@@ -100,9 +114,8 @@ class ffpr:
 
         >>> DETAILS = ffpr()
 
-        # ENHANCE THE APPEALING CONTENT
-        >>> INFO = DETAILS.probe(r"PATH_TO_MEDIA_FILE", pretty=True)
-        >>> print(INFO)
+        >>> INFO = DETAILS.probe(r"PATH_TO_MEDIA_FILE")
+        >>> print(DETAILS.analyze(INFO, pretty=True))
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         ```
     >>> USE "pretty=True" MORE VISUALLY APPEALING FORMAT.
@@ -112,93 +125,29 @@ class ffpr:
     console = Console()  # DECLARE CONSOLE AT THE CLASS LEVEL.
 
     def __init__(self):
-        self._ffprobe_path = os.path.join(
-            os.path.dirname(os.path.realpath(__file__)), "bin", "ffpr.exe"
-        )
-        self.info = None
+        self._ffprobe_path = Path(__file__).parent / "bin" / "ffpr.exe"
 
     @property
     def ffprobe_path(self):
         return self._ffprobe_path
 
-    # ==========================================================================================================================================================
-
-    # @lru_cache(maxsize=None)
-    # def probe(self, input_file) -> Optional[FFProbeResult]:
-    #     """
-    #     >>> ANALYZE MULTIMEDIA FILE USING FFPR AND RETURN THE RESULT.
-
-    #     ⇨ PARAMETER'S
-    #     --------------
-    #     INPUT_FILE : STR
-    #     -----------------
-    #         >>> PATH TO THE MULTIMEDIA FILE.
-
-    #     ⇨ OPTIONAL
-    #     -----------
-    #         >>> RESULT OF THE FFPR ANALYSIS.
-    #         >>> RETURN: NONE
-    #     """
-    #     try:
-    #         # Check if the input file exists
-    #         if not os.path.isfile(input_file):
-    #             raise FileNotFoundError(f"FILE '{input_file}' NOT FOUND")
-
-    #         command = [
-    #             self.ffprobe_path,
-    #             "-v",
-    #             "quiet",
-    #             "-print_format",
-    #             "json",
-    #             "-show_format",
-    #             "-show_streams",
-    #             input_file,
-    #         ]
-    #         result = subprocess.run(
-    #             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
-    #         )
-    #         self.info = FFProbeResult(json.loads(result.stdout.decode("utf-8")))
-    #         gc.collect()
-    #         self.pretty(self.info)
-    #         return self.info
-    #     except FileNotFoundError as e:
-    #         error_message = Text(f"ERROR: {e}", style="bold red")
-    #         console.print(error_message)
-    #         return None
-    #     except subprocess.CalledProcessError as e:
-    #         error_message = Text(f"ERROR: {e}", style="bold red")
-    #         console.print(error_message)
-    #         return None
-    #     except Exception as e:
-    #         error_message = Text(
-    #             f"ERROR: AN UNEXPECTED ERROR OCCURRED: {e}", style="bold red"
-    #         )
-    #         console.print(error_message)
-    #         return None
-
-    # ==========================================================================================================================================================
-
     @lru_cache(maxsize=None)
-    def probe(self, input_file, pretty: bool = False) -> Optional[str]:
+    def probe(self, input_file) -> Optional[FFProbeResult]:
         """
-        ANALYZE MULTIMEDIA FILE USING FFPR AND RETURN THE RESULT IN JSON FORMAT.
+        >>> ANALYZE MULTIMEDIA FILE USING FFPR AND RETURN THE RESULT.
 
-        PARAMETER'S
+        ⇨ PARAMETER'S
         --------------
         INPUT_FILE : STR
         -----------------
-            PATH TO THE MULTIMEDIA FILE.
+            >>> PATH TO THE MULTIMEDIA FILE.
 
-        pretty : bool, optional
-            Whether to use the pretty format or not. Default is False.
-
-        OPTIONAL
+        ⇨ OPTIONAL
         -----------
-            RESULT OF THE FFPR ANALYSIS IN JSON FORMAT OR PRETTY FORMAT DEPENDING ON pretty.
-            RETURN: NONE
+            >>> RESULT OF THE FFPR ANALYSIS.
+            >>> RETURN: NONE
         """
         try:
-            # Check if the input file exists
             if not os.path.isfile(input_file):
                 raise FileNotFoundError(f"FILE '{input_file}' NOT FOUND")
 
@@ -215,56 +164,31 @@ class ffpr:
             result = subprocess.run(
                 command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
             )
-            json_data = result.stdout.decode("utf-8")
-
-            if pretty:
-                parsed_info = FFProbeResult(json.loads(json_data))
-                self.pretty(parsed_info)
-                return "-"
-            else:
-                console = Console()
-                os.system("cls")
-                console.print(
-                    "[bold magenta]JSON OUTPUT :Receipt:[/bold magenta]"
-                )  # Magenta color for header
-                console.print("[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
-                # Split JSON data into key-value pairs and apply rich formatting
-                for line in json_data.splitlines():
-                    if ":" in line:
-                        key, value = line.split(":", 1)
-                        key = key.strip().upper()
-                        value = value.strip().upper()
-                        console.print(
-                            f"[bold magenta]{key}[/bold magenta]: [cyan]{value}[/cyan]"
-                        )
-                    else:
-                        console.print(line)
-                return "-"
-
+            self.info = FFProbeResult(json.loads(result.stdout.decode("utf-8")))
+            gc.collect()
+            return self.info
         except FileNotFoundError as e:
-            error_message = f"ERROR: {e}"
-            console.print(
-                f"[bold red]{error_message}[/bold red]"
-            )  # Bold red for error message
+            clear_console()
+            error_message = Text(f"ERROR: {e}", style="bold red")
+            console.print(error_message)
             return None
         except subprocess.CalledProcessError as e:
-            error_message = f"ERROR: {e}"
-            console.print(
-                f"[bold red]{error_message}[/bold red]"
-            )  # Bold red for error message
+            clear_console()
+            error_message = Text(f"ERROR: {e}", style="bold red")
+            console.print(error_message)
             return None
         except Exception as e:
-            error_message = f"ERROR: AN UNEXPECTED ERROR OCCURRED: {e}"
-            console.print(
-                f"[bold red]{error_message}[/bold red]"
-            )  # Bold red for error message
+            clear_console()
+            error_message = Text(
+                f"ERROR: AN UNEXPECTED ERROR OCCURRED: {e}", style="bold red"
+            )
+            console.print(error_message)
             return None
 
     @lru_cache(maxsize=None)
-    def pretty(self, info: FFProbeResult):
+    def analyze(self, info: FFProbeResult, pretty: bool = False):
         """
         >>> FORMATS AND PRINTS A SUMMARY OF THE FFPR ANALYSIS RESULT.
-
         ARGS:
         -----
             >>> INFO (FFPRRESULT): THE FFPRRESULT OBJECT CONTAINING THE ANALYSIS INFORMATION.
@@ -280,17 +204,27 @@ class ffpr:
 
         """
         if not info:
+            clear_console()
             console.print(
                 "[bold magenta]WARNING: NO INFORMATION AVAILABLE.[/bold magenta]"
             )
-            return
+            return "-"
 
-        os.system("cls" if os.name == "nt" else "clear")
+        clear_console()
         console.print(
-            "\n[bold magenta]MEDIA FILE ANALYSIS SUMMARY:[/bold magenta] :Bookmark_tabs:"
+            "[bold magenta]MEDIA FILE ANALYSIS:[/bold magenta] :Bookmark_tabs:"
         )
-        console.print("[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+        console.print("[bold magenta]━━━━━━━━━━━━━━━━━━━━━━━━━\n")
 
+        if pretty:
+            self._print_summary_table(info)
+        else:
+            self._print_tree_structure(info)
+
+        gc.collect()
+        return "-"
+
+    def _print_summary_table(self, info: FFProbeResult):
         table = Table(show_header=True, header_style="bold magenta", box=ROUNDED)
         table.add_column("[bold magenta]PROPERTY[/bold magenta]", style="cyan")
         table.add_column("[bold magenta]VALUE[/bold magenta]", style="cyan")
@@ -367,4 +301,64 @@ class ffpr:
 
             console.print(stream_table)
 
-        gc.collect()
+    def _print_tree_structure(self, info: FFProbeResult):
+        clear_console()
+        tree = Tree("[bold magenta]MEDIA FILE ANALYSIS TREE[/bold magenta] 🌳")
+
+        file_node = tree.add("[bold magenta]FILE INFORMATION:[/bold magenta]")
+        file_node.add(
+            "[bold magenta]FILENAME:[/bold magenta] [cyan]"
+            + info.info["format"]["filename"]
+            + "[/cyan]"
+        )
+        file_node.add(
+            "[bold magenta]DURATION:[/bold magenta] [cyan]"
+            + f"{int(float(info.info['format']['duration'])/60):02d}:{int(float(info.info['format']['duration'])%60):02d}"
+            + "[/cyan]"
+        )
+        file_node.add(
+            "[bold magenta]SIZE:[/bold magenta] [cyan]"
+            + f"{int(info.info['format']['size'])/(1024*1024):.2f} MB"
+            + "[/cyan]"
+        )
+        file_node.add(
+            "[bold magenta]FORMAT:[/bold magenta] [cyan]"
+            + info.info["format"]["format_name"].upper()
+            + "[/cyan]"
+        )
+        file_node.add(
+            "[bold magenta]START TIME:[/bold magenta] [cyan]"
+            + f"{float(info.info['format']['start_time']):.2f}"
+            + "[/cyan]"
+        )
+        file_node.add(
+            "[bold magenta]BIT RATE:[/bold magenta] [cyan]"
+            + f"{int(info.info['format']['bit_rate'])/1000} KB/S"
+            + "[/cyan]"
+        )
+        file_node.add(
+            "[bold magenta]PROBE SCORE:[/bold magenta] [cyan]"
+            + str(info.info["format"]["probe_score"])
+            + "[/cyan]"
+        )
+
+        for stream_number, stream_info in enumerate(info.STREAMS, start=1):
+            stream_type = (
+                "[bold magenta]VIDEO STREAM:[/bold magenta]"
+                if stream_info["codec_type"] == "video"
+                else "[bold magenta]AUDIO STREAM:[/bold magenta]"
+            )
+            stream_node = file_node.add(stream_type)
+
+            for key, value in stream_info.items():
+                if isinstance(value, dict):
+                    formatted_value = ", ".join(f"{k}: {v}" for k, v in value.items())
+                    stream_node.add(
+                        f"[bold magenta]{key.upper()}:[/bold magenta] [cyan]{formatted_value.upper()}[/cyan]"
+                    )
+                else:
+                    stream_node.add(
+                        f"[bold magenta]{key.upper()}:[/bold magenta] [cyan]{str(value).upper()}[/cyan]"
+                    )
+
+        console.print(tree)
