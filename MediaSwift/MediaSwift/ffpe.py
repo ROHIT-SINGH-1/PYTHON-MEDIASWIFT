@@ -563,8 +563,8 @@ class ffpe:
         ```python
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             >>> from MediaSwift import *
-            >>> info = ffpe()
-            >>> info.formats()
+            >>> INFO = ffpe()
+            >>> print(INFO.codecs())
 
             # GET INFORMATION ABOUT THE CODEC'S ENCODER.
             >>> info.codecs(encoder="aac")
@@ -715,8 +715,8 @@ class ffpe:
         ```python
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             >>> from MediaSwift import *
-            >>> info = ffpe()
-            >>> info.formats()
+            >>> INFO = ffpe()
+            >>> print(INFO.formats())
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         ```
 
@@ -801,8 +801,8 @@ class ffpe:
         ```python
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             >>> from MediaSwift import *
-            >>> info = ffpe()
-            >>> info.hwaccels()
+            >>> INFO = ffpe()
+            >>> print(INFO.hwaccels())
         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         ```
         >>> RETURNS: NONE

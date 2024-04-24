@@ -1,6 +1,6 @@
 ## `MediaSwift` ⇨  🚀 EMPOWERING PYTHON WITH ADVANCED MULTIMEDIA OPERATION'S.
 
-[![License](https://img.shields.io/badge/LICENSE-GPLv3-blue?style=flat-square&logo=gnu%20bash)](https://github.com/ROHIT-SINGH-1/PYTHON-MEDIASWIFT/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/LICENSE-MIT-blue?style=flat-square&logo=gnu%20bash)](https://github.com/ROHIT-SINGH-1/PYTHON-MEDIASWIFT/blob/main/LICENSE)
 
 #### ⇨ `MediaSwift` : A POWERFUL PYTHON LIBRARY FOR SEAMLESS MULTIMEDIA OPERATIONS , `MediaSwift` SIMPLIFIES COMPLEX TASKS, MAKING IT EASY TO INTEGRATE AND ENHANCE YOUR MULTIMEDIA APPLICATIONS. DIVE INTO THE FUTURE OF MEDIA HANDLING WITH `MediaSwift` YOUR GO-TO LIBRARY FOR 2024 .
 

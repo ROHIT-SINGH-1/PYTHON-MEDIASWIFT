@@ -12,11 +12,11 @@ def read_file(filename):
 
 setup(
     name="MediaSwift",
-    version="2.4.1",
+    version="2.4.2",
     author="ROHIT SINGH",
     author_email="rs3232263@gmail.com",
     description="A MediaSwift PYTHON PACKAGE FOR MEDIA CONVERSION PLAY AND PROBING.",
-    long_description=read_file("README.md"),
+    long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/ROHIT-SINGH-1/PYTHON-MEDIASWIFT.git",
     packages=find_packages(),
@@ -25,14 +25,14 @@ setup(
         "Intended Audience :: Developers",
         "Intended Audience :: End Users/Desktop",
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Topic :: Multimedia :: Video",
-        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: Software Development :: Libraries :: Python Modules"
     ],
     keywords="MEDIA VIDEO CONVERSION PROBING AND PLAYING.",
     python_requires=">=3.8",
-    license="GPL-3.0",
+    license="MIT",
     project_urls={
         "Documentation": "https://github.com/ROHIT-SINGH-1/PYTHON-MEDIASWIFT/blob/main/README.md",
         "Source Code": "https://github.com/ROHIT-SINGH-1/PYTHON-MEDIASWIFT",

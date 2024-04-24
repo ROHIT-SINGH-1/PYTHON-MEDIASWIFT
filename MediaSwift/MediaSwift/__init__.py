@@ -19,7 +19,7 @@ from .ffpl import ffpl
 
 __all__ = ["ffpe", "ffpr", "ffpl", "version", "author"]
 
-__version__ = "2.4.1"
+__version__ = "2.4.2"
 __author__ = "ROHIT SINGH"
 
 
@@ -38,15 +38,13 @@ def author():
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     from MediaSwift import author
 
-    info = author()
-    print(info)
+    INFO = author()
+    print(INFO)
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     ```
     >>> RETURN: NONE
     """
-    author_name = Text(
-        "😄 PYTHON LIBRARY AUTHOR NAME: " + __author__, style="bold magenta"
-    )
+    author_name = Text("ROHIT SINGH 😄", style="bold magenta")
     console.print(
         Panel.fit(author_name, title="AUTHOR INFORMATION", border_style="green")
     )
@@ -67,15 +65,14 @@ def version():
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     from MediaSwift import version
 
-    info = version()
-    print(info)
+    INFO = version()
+    print(INFO)
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     ```
+
     >>> RETURN: NONE
     """
-    version_info = Text(
-        "☑️  PYTHON LIBRARY VERSION: " + __version__, style="bold magenta"
-    )
+    version_info = Text("VERSION: " + __version__ + " ☑️", style="bold magenta")
     console.print(
         Panel.fit(version_info, title="VERSION INFORMATION", border_style="green")
     )
