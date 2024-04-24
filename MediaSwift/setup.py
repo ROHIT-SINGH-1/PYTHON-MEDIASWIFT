@@ -16,7 +16,7 @@ setup(
     author="ROHIT SINGH",
     author_email="rs3232263@gmail.com",
     description="A MediaSwift PYTHON PACKAGE FOR MEDIA CONVERSION PLAY AND PROBING.",
-    long_description=open("README.md").read(),
+    long_description=read_file("README.md"),
     long_description_content_type="text/markdown",
     url="https://github.com/ROHIT-SINGH-1/PYTHON-MEDIASWIFT.git",
     packages=find_packages(),
